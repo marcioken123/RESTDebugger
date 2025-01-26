@@ -1,0 +1,48 @@
+object Wait: TWait
+  Left = 0
+  Top = 0
+  BorderIcons = []
+  BorderStyle = None
+  Caption = 'Please wait!'
+  ClientHeight = 94
+  ClientWidth = 485
+  Fill.Kind = Solid
+  Position = OwnerFormCenter
+  StyleLookup = 'panelstyle'
+  FormStyle = StayOnTop
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop, iPhone, iPad]
+  DesignerMasterStyle = 0
+  object LabelStatus: TLabel
+    StyledSettings = [Family, Style, FontColor]
+    Position.X = 96.000000000000000000
+    Position.Y = 36.000000000000000000
+    Size.Width = 233.000000000000000000
+    Size.Height = 29.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.Font.Size = 18.000000000000000000
+    Text = 'Working ...'
+  end
+  object ArcProgressLoading: TArcProgress
+    Max = 100.000000000000000000
+    State = psIndeterminate
+    BackgroundColor.Color = xFF0D4570
+    BackgroundColor.Thickness = 2.000000000000000000
+    ProgressColor.Color = xFF046DBD
+    ProgressColor.Thickness = 10.000000000000000000
+    ProgressColor.Cap = Round
+    ProgressColor.Join = Round
+    HitTest = True
+    Margins.Left = 304.000000000000000000
+    Margins.Top = 93.000000000000000000
+    Margins.Right = 304.000000000000000000
+    Margins.Bottom = 93.000000000000000000
+    Position.X = 24.000000000000000000
+    Position.Y = 21.000000000000000000
+    Size.Width = 54.000000000000000000
+    Size.Height = 50.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+  end
+end
