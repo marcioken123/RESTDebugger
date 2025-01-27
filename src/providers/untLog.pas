@@ -352,7 +352,7 @@ var
   begin
     ReadLn(F, sAux);
     try
-      DataAux := EncodeDate(StrToInt(Copy(sAux, 7, 4)), StrToInt(Copy(sAux, 4, 2)), StrToInt(Copy(sAux, 1, 2)));
+      DataAux := EncodeDate(StrToIntDef(Copy(sAux, 7, 4), 0), StrToIntDef(Copy(sAux, 4, 2), 0), StrToIntDef(Copy(sAux, 1, 2), 0));
       Result :=  Trunc(DataHoje - DataAux) > ALimiteDias;
     except
       Result := True;

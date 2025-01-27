@@ -204,6 +204,7 @@ type
     procedure MenuItem1Click(Sender: TObject);
     procedure MenuItem2Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure tc_ResponseChange(Sender: TObject);
   public
     { Private declarations }
     TrayWnd: HWND;
@@ -1390,6 +1391,11 @@ end;
 procedure Tfrm_Main.tc_RequestChange(Sender: TObject);
 begin
   DoFetchRequestParamsFromControls;
+end;
+
+procedure Tfrm_Main.tc_ResponseChange(Sender: TObject);
+begin
+  TLog.MyLog('Mudando TAB' + tc_Response.ActiveTab.Name, nil, 0, false, TCriticalLog.tlINFO);
 end;
 
 procedure Tfrm_Main.SynchEditCaret(AEdit1, AEdit2: TCustomEdit);
