@@ -6,7 +6,7 @@
 {                                                       }
 {*******************************************************}
 
-unit provider.osutils;
+unit provider.OSUtils;
 
 interface
 
