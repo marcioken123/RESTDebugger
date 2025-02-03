@@ -16,13 +16,13 @@ uses
   provider.MRUList in 'src\providers\provider.MRUList.pas',
   ufrmWait in 'src\ufrmWait.pas' {frmWait},
   ufrmoauth2 in 'src\ufrmoauth2.pas' {frm_OAuth2},
-  provider.osutils in 'src\providers\provider.osutils.pas',
+  provider.OSUtils in 'src\providers\provider.OSUtils.pas',
   ufrmoauth1 in 'src\ufrmoauth1.pas' {frm_OAuth1},
   uComponentToClipboard in 'src\providers\uComponentToClipboard.pas',
   provider.SettingsList in 'src\providers\provider.SettingsList.pas',
   provider.Consts in 'src\providers\provider.Consts.pas',
   untLog in 'src\providers\untLog.pas',
-  AspJson in 'src\providers\AspJson.pas',
+  provider.AspJson in 'src\providers\provider.AspJson.pas',
   ufrmListaAPIs in 'src\ufrmListaAPIs.pas' {frmListaAPIs},
   controller.MainForm in 'src\controllers\controller.MainForm.pas',
   controller.UI in 'src\controllers\controller.UI.pas',
@@ -33,6 +33,7 @@ uses
 {$R *.res}
 
 begin
+  TLog.MyLogTemp('', nil, 0, False, TCriticalLog.tlINFO);
   TLog.MyLogTemp('', nil, 0, False, TCriticalLog.tlINFO);
   TLog.MyLogTemp('***********************************************', nil, 0, False, TCriticalLog.tlINFO);
   TLog.MyLogTemp('Inicialização do REST Debugger', nil, 0, False, TCriticalLog.tlINFO);

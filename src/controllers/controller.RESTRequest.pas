@@ -72,14 +72,14 @@ begin
           frm_Main.DoAddToMRUList(frm_Main.FRESTParams);
           frm_Main.RestoreGridColumnWidths;
         except
-          on E: TRESTResponseDataSetAdapter.EJSONValueError do
-          begin
-            // Ignore
-          end;
-          on E: TRESTResponse.EJSONValueError do
-          begin
-            // Ignore
-          end;
+//          on E: TRESTResponseDataSetAdapter.EJSONValueError do
+//          begin
+//            // Ignore
+//          end;
+//          on E: TRESTResponse.EJSONValueError do
+//          begin
+//            // Ignore
+//          end;
           on E: Exception do
           begin
             TThread.Synchronize(nil,

@@ -73,11 +73,11 @@ var
   frm_OAuth1: Tfrm_OAuth1;
 
 implementation
+
 uses
   uMain_frm,
   uOSUtils,
   REST.Types,
-
   System.StrUtils,
   REST.Authenticator.OAuth;
 

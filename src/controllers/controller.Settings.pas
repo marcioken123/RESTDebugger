@@ -61,14 +61,14 @@ begin
     frm_Main.cbProxy.IsChecked    := LINI.ReadBool    ('proxy'           , 'enabled', false);
     frm_Main.edt_ProxyServer.Text := LINI.ReadString  ('proxy'           , 'server'     , '');
     frm_Main.edt_ProxyPort.Value  := LINI.ReadInteger ('proxy'           , 'port'       , 0);
-    frm_Main.edt_ProxyUser.Text   := SimpleDecryptStr(LINI.ReadString('proxy', 'username', SimpleEncryptStr('', AUTH_CRYPTO_VALUE)), AUTH_CRYPTO_VALUE);
-    frm_Main.edt_ProxyPass.Text   := SimpleDecryptStr(LINI.ReadString('proxy', 'password', SimpleEncryptStr('', AUTH_CRYPTO_VALUE)), AUTH_CRYPTO_VALUE);
+    frm_Main.edt_ProxyUser.Text   := SimpleDecryptStr (LINI.ReadString('proxy', 'username', SimpleEncryptStr('', AUTH_CRYPTO_VALUE)), AUTH_CRYPTO_VALUE);
+    frm_Main.edt_ProxyPass.Text   := SimpleDecryptStr (LINI.ReadString('proxy', 'password', SimpleEncryptStr('', AUTH_CRYPTO_VALUE)), AUTH_CRYPTO_VALUE);
 
     DefaultStorageFolder := LINI.ReadString  ('FileInformation' , 'DefaultStorageFolder', IncludeTrailingPathDelimiter(System.IOUtils.TPath.GetDocumentsPath) + 'RESTDebugger' + PathDelim);
 
     //DefaultStorageFolder := IncludeTrailingPathDelimiter(System.IOUtils.TPath.GetDocumentsPath) + 'RESTDebugger' + PathDelim;
 
-    if NOT TDirectory.Exists(DefaultStorageFolder) then
+    if not TDirectory.Exists(DefaultStorageFolder) then
       TDirectory.CreateDirectory(DefaultStorageFolder);
 
     MRUDBFILE            := LINI.ReadString  ('FileInformation' , 'MruDbFile'           , MRUDBFILE);

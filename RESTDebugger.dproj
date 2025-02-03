@@ -276,7 +276,7 @@
         <DCCReference Include="src\ufrmoauth2.pas">
             <Form>frm_OAuth2</Form>
         </DCCReference>
-        <DCCReference Include="src\providers\provider.osutils.pas"/>
+        <DCCReference Include="src\providers\provider.OSUtils.pas"/>
         <DCCReference Include="src\ufrmoauth1.pas">
             <Form>frm_OAuth1</Form>
         </DCCReference>
@@ -284,7 +284,7 @@
         <DCCReference Include="src\providers\provider.SettingsList.pas"/>
         <DCCReference Include="src\providers\provider.Consts.pas"/>
         <DCCReference Include="src\providers\untLog.pas"/>
-        <DCCReference Include="src\providers\AspJson.pas"/>
+        <DCCReference Include="src\providers\provider.AspJson.pas"/>
         <DCCReference Include="src\ufrmListaAPIs.pas">
             <Form>frmListaAPIs</Form>
         </DCCReference>
@@ -389,6 +389,7 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="OSX32-Debug\RESTDebugger.entitlements" Configuration="Debug" Class="ProjectOSXEntitlements"/>
+                <DeployFile LocalName="..\..\..\..\bin\RESTDebugger.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png" Configuration="Debug" Class="UWP_DelphiLogo44">
                     <Platform Name="Win32">
                         <RemoteDir>Assets\</RemoteDir>
@@ -396,7 +397,6 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\..\..\..\bin\RESTDebugger.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
                         <Overwrite>true</Overwrite>
