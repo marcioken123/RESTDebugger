@@ -1,0 +1,29 @@
+object frmListaAPIs: TfrmListaAPIs
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 515
+  ClientWidth = 836
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object Grid1: TGrid
+    CanFocus = True
+    ClipChildren = True
+    Position.X = 16.000000000000000000
+    Position.Y = 64.000000000000000000
+    Size.Width = 689.000000000000000000
+    Size.Height = 345.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    Viewport.Width = 685.000000000000000000
+    Viewport.Height = 320.000000000000000000
+  end
+  object ClientDataSet1: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 464
+    Top = 64
+  end
+end

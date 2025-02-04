@@ -1,0 +1,256 @@
+object frm_OAuth2: Tfrm_OAuth2
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu]
+  Caption = 'OAuth2 - Assistant'
+  ClientHeight = 478
+  ClientWidth = 623
+  Position = MainFormCenter
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop, iPhone, iPad]
+  OnCreate = FormCreate
+  OnClose = FormClose
+  DesignerMasterStyle = 0
+  object gb_MiscSettings: TGroupBox
+    Position.X = 320.000000000000000000
+    Position.Y = 168.000000000000000000
+    Size.Width = 290.000000000000000000
+    Size.Height = 137.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'Misc'
+    TabOrder = 3
+    object cmb_ResponseType: TComboBox
+      Position.X = 20.000000000000000000
+      Position.Y = 48.000000000000000000
+      Size.Width = 250.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      object Label25: TLabel
+        Position.Y = -16.000000000000000000
+        Size.Width = 240.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Response-Type:'
+      end
+      object TListBoxItem
+        TabOrder = 0
+        Text = '-- filled at runtime--'
+      end
+    end
+    object edt_OAuth2Scope: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 1
+      Position.X = 20.000000000000000000
+      Position.Y = 96.000000000000000000
+      Size.Width = 250.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      object Label26: TLabel
+        Position.Y = -16.000000000000000000
+        Size.Width = 240.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Scope:'
+      end
+    end
+  end
+  object gb_Endpoints: TGroupBox
+    Position.X = 16.000000000000000000
+    Position.Y = 24.000000000000000000
+    Size.Width = 290.000000000000000000
+    Size.Height = 185.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'Endpoints'
+    TabOrder = 0
+    object edt_OAuth2AuthEndpoint: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 0
+      Position.X = 20.000000000000000000
+      Position.Y = 48.000000000000000000
+      Size.Width = 250.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      object Label20: TLabel
+        Position.Y = -16.000000000000000000
+        Size.Width = 240.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Auth-Endpoint:'
+      end
+    end
+    object edt_OAuth2AccessTokenEndpoint: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 1
+      Position.X = 20.000000000000000000
+      Position.Y = 96.000000000000000000
+      Size.Width = 250.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      object Label21: TLabel
+        Position.Y = -16.000000000000000000
+        Size.Width = 240.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Access-Token-Endpoint:'
+      end
+    end
+    object edt_OAuth2RedirectEndpoint: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 2
+      Position.X = 20.000000000000000000
+      Position.Y = 144.000000000000000000
+      Size.Width = 250.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      object Label22: TLabel
+        Position.Y = -16.000000000000000000
+        Size.Width = 240.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Redirection-Endpoint:'
+      end
+    end
+  end
+  object gb_ClientData: TGroupBox
+    Position.X = 320.000000000000000000
+    Position.Y = 24.000000000000000000
+    Size.Width = 290.000000000000000000
+    Size.Height = 137.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'Client-Data'
+    TabOrder = 1
+    object edt_OAuth2ClientID: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 0
+      Position.X = 20.000000000000000000
+      Position.Y = 48.000000000000000000
+      Size.Width = 250.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      object Label18: TLabel
+        Position.Y = -16.000000000000000000
+        Size.Width = 240.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Client-ID:'
+      end
+    end
+    object edt_OAuth2ClientSecret: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 1
+      Position.X = 20.000000000000000000
+      Position.Y = 96.000000000000000000
+      Size.Width = 250.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      object Label19: TLabel
+        Position.Y = -16.000000000000000000
+        Size.Width = 240.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Client-Secret:'
+      end
+    end
+  end
+  object gb_CodeTokens: TGroupBox
+    Position.X = 16.000000000000000000
+    Position.Y = 216.000000000000000000
+    Size.Width = 290.000000000000000000
+    Size.Height = 185.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'Code && Tokens'
+    TabOrder = 2
+    object edt_OAuth2AuthCode: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 0
+      Position.X = 20.000000000000000000
+      Position.Y = 48.000000000000000000
+      Size.Width = 250.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      object Label17: TLabel
+        Position.Y = -16.000000000000000000
+        Size.Width = 240.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Auth-Code:'
+      end
+    end
+    object edt_OAuth2AccessToken: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 1
+      Position.X = 20.000000000000000000
+      Position.Y = 96.000000000000000000
+      Size.Width = 250.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      object Label23: TLabel
+        Position.Y = -16.000000000000000000
+        Size.Width = 240.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Access-Token:'
+      end
+    end
+    object edt_OAuth2RefreshToken: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      TabOrder = 2
+      Position.X = 20.000000000000000000
+      Position.Y = 144.000000000000000000
+      Size.Width = 250.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      object Label24: TLabel
+        Position.Y = -16.000000000000000000
+        Size.Width = 240.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Refresh-Token:'
+      end
+    end
+  end
+  object btn_Cancel: TButton
+    Anchors = [akRight, akBottom]
+    Position.X = 528.000000000000000000
+    Position.Y = 441.000000000000000000
+    Size.Width = 80.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 7
+    Text = 'Cancel'
+    OnClick = btn_CancelClick
+  end
+  object btn_Apply: TButton
+    Anchors = [akRight, akBottom]
+    Position.X = 440.000000000000000000
+    Position.Y = 441.000000000000000000
+    Size.Width = 80.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 6
+    Text = 'Apply'
+    OnClick = btn_ApplyClick
+  end
+  object btn_Authorize: TButton
+    Position.X = 370.000000000000000000
+    Position.Y = 328.000000000000000000
+    Size.Width = 200.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 4
+    Text = 'Step #1: Authorize'
+    OnClick = btn_AuthorizeClick
+  end
+  object Button2: TButton
+    Position.X = 370.000000000000000000
+    Position.Y = 360.000000000000000000
+    Size.Width = 200.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 5
+    Text = 'Step #2: Request Access-Token'
+    OnClick = Button2Click
+  end
+end
