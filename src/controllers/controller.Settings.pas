@@ -41,6 +41,7 @@ procedure DoSaveRequestSettings;
 begin
   try
     frm_Main.DoFetchRequestParamsFromControls;
+
     if frm_Main.dlg_SaveRequestSettings.Execute then
     begin
       frm_Main.FRESTParams.SaveToFile(frm_Main.dlg_SaveRequestSettings.FileName);

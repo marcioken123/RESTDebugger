@@ -303,6 +303,7 @@ begin
   LList := TList<TComponent>.Create;
   RESTClient.OnValidateCertificate := nil;
   RESTClient.OnNeedClientCertificate := nil;
+
   try
     LList.AddRange([RESTClient, RESTRequest, RESTResponse]);
     if Self.tc_Response.ActiveTab = ti_Response_TableView then
@@ -443,8 +444,7 @@ begin
   cmb_RequestURLChange( Sender );
 end;
 
-procedure Tfrm_Main.cmb_RequestURLKeyDown(Sender: TObject; var Key: Word;
-  var KeyChar: Char; Shift: TShiftState);
+procedure Tfrm_Main.cmb_RequestURLKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
   if TComboEdit(Sender).Items.Count > 0 then
     if Key = vkReturn then
@@ -473,6 +473,7 @@ begin
       LParameter.Name := LDialog.cmb_ParameterName.Text;
       LParameter.Value := LDialog.edt_ParameterValue.Text;
       LParameter.Kind := LKind;
+
       if LDialog.cbx_DoNotEncode.IsChecked then
         LParameter.Options := LParameter.Options + [poDoNotEncode]
       else
@@ -633,6 +634,7 @@ begin
 
   /// transfer http-headers into memo
   memo_ResponseHeader.Lines.Clear;
+
   for i := 0 to AResponse.Headers.Count - 1 do
     memo_ResponseHeader.Lines.Add(AResponse.Headers[i]);
 
@@ -949,8 +951,10 @@ var
 begin
   cmb_RequestURL.Items.BeginUpdate;
   cmb_RequestURL.Items.Clear;
+
   for LItem IN FMRUList.Items do
     cmb_RequestURL.Items.AddObject(LItem.ToString, LItem);
+
   cmb_RequestURL.Items.EndUpdate;
 
   /// we do know that the last executed request is on top of the
@@ -1010,6 +1014,7 @@ begin
       if not LIntf.HasJSONResponse then
         if RESTResponse.ContentLength > 0 then
           raise Exception.Create(Format(RSRootElementAppliesToJSON, [EditRootElement.Text]));
+
       RESTResponse.RootElement := EditRootElement.Text;
     except
       TWait.Done;
@@ -1034,7 +1039,7 @@ procedure Tfrm_Main.TrayWndProc(var Message: TMessage);
 var
   P: TPoint;
 begin
-  if Message.MSG=WM_ICONTRAY then
+  if Message.MSG = WM_ICONTRAY then
   begin
      case Message.LParam of
        WM_RBUTTONDOWN:
@@ -1047,11 +1052,11 @@ begin
          Self.Show;
        end;
      else
-       Message.Result:=DefWindowProc(TrayWnd, Message.MSG, Message.WParam, Message.LParam);
+       Message.Result := DefWindowProc(TrayWnd, Message.MSG, Message.WParam, Message.LParam);
      end;
   end
   else
-    Message.Result:=DefWindowProc(TrayWnd, Message.MSG, Message.WParam, Message.LParam);
+    Message.Result := DefWindowProc(TrayWnd, Message.MSG, Message.WParam, Message.LParam);
 end;
 
 procedure Tfrm_Main.EditRootElementTabKeyDown(Sender: TObject; var Key: Word;
@@ -1083,6 +1088,7 @@ end;
 procedure Tfrm_Main.FormCreate(Sender: TObject);
 begin
   TrayWnd := AllocateHWnd(TrayWndProc);
+
   with TrayIconData do
   begin
     cbSize := SizeOf();
@@ -1108,6 +1114,8 @@ begin
 
   dlg_LoadRequestSettings.InitialDir := DefaultStorageFolder;
   dlg_SaveRequestSettings.InitialDir := DefaultStorageFolder;
+
+  TLog.MyLogTemp('Pasta padrão utilizada:' + DefaultStorageFolder, nil, 0, False, TCriticalLog.tlINFO);
 
 //  TWait.Start;
 
@@ -1161,15 +1169,15 @@ begin
   pid := 0;
   current_pid := GetCurrentProcessId();
   repeat
-  begin
-    //appHandle := FindWindowExA(0, appHandle, 'TFMAppClass', nil);
-    appHandle := FindWindowExA(0, appHandle, 'TFMAppClass', PAnsiChar(AnsiString(name)));
-    if (appHandle>0) then
     begin
-      GetWindowThreadProcessId(appHandle, pid);
-      if (current_pid = pid) then break;
-    end;
-  end
+      //appHandle := FindWindowExA(0, appHandle, 'TFMAppClass', nil);
+      appHandle := FindWindowExA(0, appHandle, 'TFMAppClass', PAnsiChar(AnsiString(name)));
+      if (appHandle>0) then
+      begin
+        GetWindowThreadProcessId(appHandle, pid);
+        if (current_pid = pid) then break;
+      end;
+    end
   until (appHandle>0);
 
   //SetParent(FmxHandleToHWND(Handle), nil);
@@ -1220,6 +1228,7 @@ begin
     cmb_AuthMethod.EndUpdate;
   END;
 
+  TLog.MyLogTemp('InitAuthMethodCombo:' + IntToStr(cmb_AuthMethod.Items.Count) + 'autenticaçôes encontrados.', nil, 0, False, TCriticalLog.tlINFO);
   /// try to set the itemindex to the default-value
   if (cmb_AuthMethod.Items.IndexOf(RESTAuthMethodToString(DefaultRESTAuthMethod)) > -1) then
     cmb_AuthMethod.ItemIndex := cmb_AuthMethod.Items.IndexOf(RESTAuthMethodToString(DefaultRESTAuthMethod));
@@ -1238,6 +1247,7 @@ begin
     cmb_RequestMethod.EndUpdate;
   END;
 
+  TLog.MyLogTemp('InitRequestMethodCombo:' + IntToStr(cmb_RequestMethod.Items.Count) + 'métodos encontrados.', nil, 0, False, TCriticalLog.tlINFO);
   /// try to set the itemindex to the default-value
   if (cmb_RequestMethod.Items.IndexOf(RESTRequestMethodToString(DefaultRESTRequestMethod)) > -1) then
     cmb_RequestMethod.ItemIndex := cmb_RequestMethod.Items.IndexOf(RESTRequestMethodToString(DefaultRESTRequestMethod));

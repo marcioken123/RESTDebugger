@@ -228,8 +228,7 @@
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_Debug>true</VerInfo_Debug>
         <DCC_DcpOutput>DCU</DCC_DcpOutput>
-        <Icon_MainIcon>RESTDebugger_Icon9.ico</Icon_MainIcon>
-        <Icns_MainIcns>RESTDebugger_Icns4.icns</Icns_MainIcns>
+        <Icon_MainIcon>RESTDebugger_Icon.ico</Icon_MainIcon>
         <DCC_ExeOutput>bin</DCC_ExeOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -389,7 +388,6 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="OSX32-Debug\RESTDebugger.entitlements" Configuration="Debug" Class="ProjectOSXEntitlements"/>
-                <DeployFile LocalName="..\..\..\..\bin\RESTDebugger.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png" Configuration="Debug" Class="UWP_DelphiLogo44">
                     <Platform Name="Win32">
                         <RemoteDir>Assets\</RemoteDir>
@@ -397,6 +395,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="..\..\..\..\bin\RESTDebugger.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
                         <Overwrite>true</Overwrite>
