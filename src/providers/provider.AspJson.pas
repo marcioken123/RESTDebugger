@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, System.JSON,
-  DBClient, DB {$IFDEF FIREMONKEY},MyAspFuncoesUteis{$ENDIF};
+  DBClient, DB {$IFDEF FIREMONKEY},MyAspFuncoesUteis{$ENDIF}, System.Generics.Collections;
   // FMX.StdCtrls, AspPanel,  AspLabelFMX, AspGroupBox,  AspButton, FMX.Layouts, FMX.Memo,
   //FMX.ScrollBox, FMX.Controls.Presentation;
 

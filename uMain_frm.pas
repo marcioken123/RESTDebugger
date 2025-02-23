@@ -650,7 +650,7 @@ end;
 procedure Tfrm_Main.UpdateComponentProperties(ABodyAsValue: Boolean);
 var
   LPrevPos: Int64;
-  s: AnsiString;
+  s: string;
 begin
   //EditRootElement.Text := '';
   DoFetchRequestParamsFromControls;
