@@ -306,6 +306,7 @@ begin
 
   try
     LList.AddRange([RESTClient, RESTRequest, RESTResponse]);
+
     if Self.tc_Response.ActiveTab = ti_Response_TableView then
     begin
       LDataSetActive := RESTResponseDataSetAdapter.Active;
@@ -321,20 +322,23 @@ begin
 
     if RESTClient.Authenticator <> nil then
       LList.Add(RESTClient.Authenticator);
+
     StreamToClipboard(LList.ToArray);
+
     if LDataSetActive then
     begin
       RESTResponseDataSetAdapter.Active := True;
       RestoreGridColumnWidths;
     end;
+
     for LComponent in LList do
     begin
       if LNames <> '' then
         LNames := LNames + ', ';
       LNames := LNames + LComponent.ClassName;
     end;
-    MessageDlg(Format(RSComponentsCopied, [LNames]),
-      TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOK], 0);
+
+    MessageDlg(Format(RSComponentsCopied, [LNames]), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOK], 0);
   finally
     RESTClient.OnValidateCertificate := RESTClientValidateCertificate;
     RESTClient.OnNeedClientCertificate := RESTClientNeedClientCertificate;
@@ -571,11 +575,13 @@ begin
     begin
       LParameter.Name := LDialog.cmb_ParameterName.Text;
       LParameter.Value := LDialog.edt_ParameterValue.Text;
+
       if (LDialog.cmb_ParameterKind.ItemIndex > -1) then
         LParameter.Kind := RESTRequestParameterKindFromString
           (LDialog.cmb_ParameterKind.Items[LDialog.cmb_ParameterKind.ItemIndex])
       else
         LParameter.Kind := DefaultRESTRequestParameterKind;
+
       if LDialog.cbx_DoNotEncode.IsChecked then
         LParameter.Options := LParameter.Options + [poDoNotEncode]
       else
@@ -731,6 +737,7 @@ begin
 
   LURL := Trim(cmb_RequestURL.Text);
   I := LURL.IndexOf('+ -->');
+
   if I > 0 then
     LURL := Trim(LURL.Substring(0, I));
 
@@ -957,6 +964,7 @@ begin
 
   cmb_RequestURL.Items.EndUpdate;
 
+  TLog.MyLogTemp('DoUpdateMRUList:' + IntToStr(cmb_RequestURL.Items.Count) + ' URLs encontrados.', nil, 0, False, TCriticalLog.tlINFO);
   /// we do know that the last executed request is on top of the
   /// mru-list. so the item-index of the dropdown must be set to
   /// zero.
@@ -974,6 +982,7 @@ begin
   if cbProxy.IsChecked then
   begin
     lbl_ProxyState.Text := RSProxyServerEnabled + edt_ProxyServer.Text;
+
     if (edt_ProxyPort.Value > 0.1) then
       lbl_ProxyState.Text := lbl_ProxyState.Text + ':' + IntToStr(Trunc(edt_ProxyPort.Value));
   end
@@ -1010,7 +1019,8 @@ begin
 
     SaveGridColumnWidths;
     try
-     LIntf := RESTResponse;
+      LIntf := RESTResponse;
+
       if not LIntf.HasJSONResponse then
         if RESTResponse.ContentLength > 0 then
           raise Exception.Create(Format(RSRootElementAppliesToJSON, [EditRootElement.Text]));
@@ -1019,6 +1029,7 @@ begin
     except
       TWait.Done;
       RESTResponse.RootElement := FCurrentRootElement;
+
       if tc_Response.ActiveTab = ti_Response_TableView then
         EditRootElementTab.SetFocus
       else
@@ -1026,8 +1037,10 @@ begin
         tc_Response.ActiveTab := ti_Response_Body;
         EditRootElement.SetFocus
       end;
+
       raise;
     end;
+
     RESTResponseDataSetAdapter.NestedElements := cb_NestedFields.IsChecked;
     //RESTResponseDataSetAdapter.TypesMode := TJSONTypesMode(cb_ViewAs.ItemIndex);
     RestoreGridColumnWidths;
@@ -1115,7 +1128,7 @@ begin
   dlg_LoadRequestSettings.InitialDir := DefaultStorageFolder;
   dlg_SaveRequestSettings.InitialDir := DefaultStorageFolder;
 
-  TLog.MyLogTemp('Pasta padrão utilizada:' + DefaultStorageFolder, nil, 0, False, TCriticalLog.tlINFO);
+  TLog.MyLogTemp('Pasta padrão utilizada: ' + DefaultStorageFolder, nil, 0, False, TCriticalLog.tlINFO);
 
 //  TWait.Start;
 
@@ -1168,10 +1181,12 @@ begin
   appHandle := 0;
   pid := 0;
   current_pid := GetCurrentProcessId();
+
   repeat
     begin
       //appHandle := FindWindowExA(0, appHandle, 'TFMAppClass', nil);
       appHandle := FindWindowExA(0, appHandle, 'TFMAppClass', PAnsiChar(AnsiString(name)));
+
       if (appHandle>0) then
       begin
         GetWindowThreadProcessId(appHandle, pid);
@@ -1182,7 +1197,6 @@ begin
 
   //SetParent(FmxHandleToHWND(Handle), nil);
   ShowWindow(appHandle, SW_HIDE);
-
   Shell_NotifyIcon(NIM_ADD, @TrayIconData);
 end;
 
@@ -1195,20 +1209,22 @@ begin
   //ShowWindow(FindWindowA('TFMAppClass', nil), SW_HIDE);
 
   name := ChangeFileExt(ExtractFileName(ParamStr(0)), '');
-
   appHandle := 0;
   pid := 0;
   current_pid := GetCurrentProcessId();
+
   repeat
-  begin
-    //appHandle := FindWindowExA(0, appHandle, 'TFMAppClass', nil);
-    appHandle := FindWindowExA(0, appHandle, 'TFMAppClass', PAnsiChar(AnsiString(name)));
-    if (appHandle>0) then
     begin
-      GetWindowThreadProcessId(appHandle, pid);
-      if (current_pid = pid) then break;
-    end;
-  end
+      //appHandle := FindWindowExA(0, appHandle, 'TFMAppClass', nil);
+      appHandle := FindWindowExA(0, appHandle, 'TFMAppClass', PAnsiChar(AnsiString(name)));
+
+      if (appHandle>0) then
+      begin
+        GetWindowThreadProcessId(appHandle, pid);
+
+        if (current_pid = pid) then break;
+      end;
+    end
   until (appHandle>0);
 
   //SetParent(FmxHandleToHWND(Handle), nil);
@@ -1220,13 +1236,14 @@ var
   LAuthMethod: TRESTAuthMethod;
 begin
   cmb_AuthMethod.BeginUpdate;
-  TRY
+  try
     cmb_AuthMethod.Clear;
+
     for LAuthMethod IN [Low(TRESTAuthMethod) .. High(TRESTAuthMethod)] do
       cmb_AuthMethod.Items.Add(RESTAuthMethodToString(LAuthMethod));
-  FINALLY
+  finally
     cmb_AuthMethod.EndUpdate;
-  END;
+  end;
 
   TLog.MyLogTemp('InitAuthMethodCombo:' + IntToStr(cmb_AuthMethod.Items.Count) + 'autenticaçôes encontrados.', nil, 0, False, TCriticalLog.tlINFO);
   /// try to set the itemindex to the default-value
@@ -1239,13 +1256,14 @@ var
   LRequestMethod: TRESTRequestMethod;
 begin
   cmb_RequestMethod.BeginUpdate;
-  TRY
+  try
     cmb_RequestMethod.Clear;
+
     for LRequestMethod IN [Low(TRESTRequestMethod) .. High(TRESTRequestMethod)] do
       cmb_RequestMethod.Items.Add(RESTRequestMethodToString(LRequestMethod));
-  FINALLY
+  finally
     cmb_RequestMethod.EndUpdate;
-  END;
+  end;
 
   TLog.MyLogTemp('InitRequestMethodCombo:' + IntToStr(cmb_RequestMethod.Items.Count) + 'métodos encontrados.', nil, 0, False, TCriticalLog.tlINFO);
   /// try to set the itemindex to the default-value
@@ -1280,33 +1298,37 @@ var
   I, J: Integer;
 begin
   Result := AHeader;
+
   if RESTResponse.RootElement <> '' then
     if RESTResponse.JSONValue is TJSONObject then
       Result := RESTREsponse.RootElement + '.' + AHeader;
   // Normalize [0]
   repeat
     I := Result.IndexOf('[');
+
     if I >= 0 then
     begin
       J := Result.IndexOf(']', I);
+
       if J > 0 then
         Result := Result.Substring(0, I) + '||' + Result.Substring(J+1, Length(Result))
       else
         Result := Result.Substring(0, I) + '||';
     end;
   until I < 0;
+
   if Result.StartsWith('||.') then
     Result := Result.SubString(3);
 end;
 
 procedure Tfrm_Main.MenuItem1Click(Sender: TObject);
 begin
-  self.show;
+  Self.Show;
 end;
 
 procedure Tfrm_Main.MenuItem2Click(Sender: TObject);
 begin
-  application.Terminate;
+  Application.Terminate;
 end;
 
 procedure Tfrm_Main.RESTClientNeedClientCertificate(const Sender: TObject;
@@ -1349,6 +1371,7 @@ begin
   begin
     LColumn := StringGrid1.Columns[I];
     LKey := MakeWidthKey(LColumn.Header);
+
     if FSettingsList.GetWidth(LKey, LWidth) then
       LColumn.Width := LWidth;
   end;
@@ -1382,6 +1405,7 @@ begin
   if (Column <> nil) and (not Column.Header.StartsWith('TJSON')) then
   begin
     LPath := FCurrentRootElement;
+
     if RESTResponse.JSONValue is TJSONArray then
     begin
       if TJSONArray(RESTResponse.JSONValue).Count > 0 then
@@ -1391,9 +1415,11 @@ begin
     begin
       if LPath <> '' then
         LPath := LPath + '.';
+
       LPath := LPath + Column.Header;
     end;
   end;
+
   if LPath <> '' then
     EditRootElementTab.Text := LPath;
 end;
