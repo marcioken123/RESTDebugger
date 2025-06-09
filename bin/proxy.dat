@@ -1,0 +1,17 @@
+[proxy]
+enabled=0
+server=
+port=0
+username=
+password=
+
+[timeout]
+enabled=1
+value=30000
+
+[FileInformation]
+DefaultStorageFolder=C:\Users\programador02\Documents\RESTDebugger\
+MruDbFile=mru.dat
+SettingsDbFile=settings.dat
+ProxyDbFile=proxy.dat
+
