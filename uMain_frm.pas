@@ -154,12 +154,15 @@ type
     btn_Newrequest: TButton;
     btn_LoadRequest: TButton;
     btn_ExecuteRequest: TButton;
-    Rectangle2: TRectangle;
     Rectangle3: TRectangle;
     edt_Tentativas: TNumberBox;
     edt_Intervalo: TNumberBox;
     Label18: TLabel;
     Label19: TLabel;
+    StyleBook1: TStyleBook;
+    Rectangle4: TRectangle;
+    Rectangle2: TRectangle;
+    StyleBook2: TStyleBook;
     procedure FormCreate(Sender: TObject);
     procedure btn_ExecuteRequestClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -468,8 +471,7 @@ begin
     if (LDialog.ShowModal = mrOK) then
     begin
       if (LDialog.cmb_ParameterKind.ItemIndex > -1) then
-        LKind := RESTRequestParameterKindFromString
-          (LDialog.cmb_ParameterKind.Items[LDialog.cmb_ParameterKind.ItemIndex])
+        LKind := RESTRequestParameterKindFromString(LDialog.cmb_ParameterKind.Items[LDialog.cmb_ParameterKind.ItemIndex])
       else
         LKind := DefaultRESTRequestParameterKind;
 
@@ -601,7 +603,7 @@ begin
   if (lb_CustomParameters.ItemIndex < 0) then
   begin
     MessageDlg(RSNoCustomParameterSelected, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-    EXIT;
+    Exit;
   end;
 
   self.DoFetchRequestParamsFromControls;
@@ -817,16 +819,16 @@ begin
 
   lb_CustomParameters.BeginUpdate;
   lb_CustomParameters.Items.BeginUpdate;
-  TRY
+  try
     lb_CustomParameters.Clear;
     for LParameter IN FRESTParams.CustomParams do
     begin
       lb_CustomParameters.Items.AddObject(LParameter.ToString, LParameter);
     end;
-  FINALLY
+  finally
     lb_CustomParameters.Items.EndUpdate;
     lb_CustomParameters.EndUpdate;
-  END;
+  end;
 
   if (FRESTParams.CustomBody.Size > 0) then
   begin
