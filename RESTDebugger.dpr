@@ -28,7 +28,9 @@ uses
   controller.UI in 'src\controllers\controller.UI.pas',
   controller.Settings in 'src\controllers\controller.Settings.pas',
   controller.RESTRequest in 'src\controllers\controller.RESTRequest.pas',
-  udmRESTDebugger in 'src\dao\udmRESTDebugger.pas' {dmRestDebugger: TDataModule};
+  udmRESTDebugger in 'src\dao\udmRESTDebugger.pas' {dmRestDebugger: TDataModule},
+  ufrmStyleBook in 'src\ufrmStyleBook.pas' {frmStyleBook},
+  udmStyleBook in 'src\udmStyleBook.pas' {dmStyleBook: TDataModule};
 
 {$R *.res}
 
@@ -43,5 +45,6 @@ begin
   Application.OnException := tLog.MyException;
   Application.CreateForm(Tfrm_Main, frm_Main);
   Application.CreateForm(TdmRestDebugger, dmRestDebugger);
+  Application.CreateForm(TfrmStyleBook, frmStyleBook);
   Application.Run;
 end.

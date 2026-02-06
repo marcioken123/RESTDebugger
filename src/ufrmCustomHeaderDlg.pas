@@ -92,8 +92,7 @@ begin
     if (cmb_ParameterKind.Items.IndexOf(RESTRequestParameterKindToString(AParameter.Kind)) > -1) then
       cmb_ParameterKind.ItemIndex := cmb_ParameterKind.Items.IndexOf(RESTRequestParameterKindToString(AParameter.Kind))
     else
-      cmb_ParameterKind.ItemIndex := cmb_ParameterKind.Items.IndexOf
-        (RESTRequestParameterKindToString(DefaultRESTRequestParameterKind));
+      cmb_ParameterKind.ItemIndex := cmb_ParameterKind.Items.IndexOf(RESTRequestParameterKindToString(DefaultRESTRequestParameterKind));
 
     cbx_DoNotEncode.IsChecked := poDoNotEncode in AParameter.Options;
   end
@@ -106,8 +105,7 @@ begin
     cmb_ParameterName.Text := '';
     edt_ParameterValue.Text := '';
 
-    cmb_ParameterKind.ItemIndex := cmb_ParameterKind.Items.IndexOf
-      (RESTRequestParameterKindToString(DefaultRESTRequestParameterKind));
+    cmb_ParameterKind.ItemIndex := cmb_ParameterKind.Items.IndexOf(RESTRequestParameterKindToString(DefaultRESTRequestParameterKind));
 
     cbx_DoNotEncode.IsChecked := False;
   end;
@@ -167,9 +165,7 @@ begin
 
   /// try to set the itemindex to the default-value
   if (cmb_ParameterKind.Items.IndexOf(RESTRequestParameterKindToString(DefaultRESTRequestParameterKind)) > -1) then
-    cmb_ParameterKind.ItemIndex := cmb_ParameterKind.Items.IndexOf
-      (RESTRequestParameterKindToString(DefaultRESTRequestParameterKind));
-
+    cmb_ParameterKind.ItemIndex := cmb_ParameterKind.Items.IndexOf(RESTRequestParameterKindToString(DefaultRESTRequestParameterKind));
 end;
 
 procedure Tfrm_CustomHeaderDlg.SetStandardHeaderNames(const Value: TStrings);

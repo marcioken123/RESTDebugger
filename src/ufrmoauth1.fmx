@@ -6,6 +6,7 @@ object frm_OAuth1: Tfrm_OAuth1
   ClientHeight = 588
   ClientWidth = 623
   Position = MainFormCenter
+  StyleBook = frm_Main.StyleBook1
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop, iPhone, iPad]

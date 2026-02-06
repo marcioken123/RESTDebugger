@@ -76,7 +76,7 @@ implementation
 
 uses
   uMain_frm,
-  uOSUtils,
+  provider.OSUtils,
   REST.Types,
   System.StrUtils,
   REST.Authenticator.OAuth;
@@ -129,8 +129,7 @@ begin
   try
     LRequest.Method := TRESTRequestMethod.rmPOST;
 
-    LRequest.AddAuthParameter('oauth_verifier', edt_OAuth1AuthCode.Text, TRESTRequestParameterKind.pkGETorPOST,
-      [TRESTRequestParameterOption.poDoNotEncode]);
+    LRequest.AddAuthParameter('oauth_verifier', edt_OAuth1AuthCode.Text, TRESTRequestParameterKind.pkGETorPOST, [TRESTRequestParameterOption.poDoNotEncode]);
     LRequest.Client := LClient;
     LRequest.Execute;
 
@@ -179,6 +178,7 @@ begin
 
     if LRequest.Response.GetSimpleValue('oauth_token', LToken) then
       edt_OAuth1RequestToken.Text := LToken;
+
     if LRequest.Response.GetSimpleValue('oauth_token_secret', LToken) then
       edt_OAuth1RequestTokenSecret.Text := LToken;
   finally
@@ -204,21 +204,21 @@ end;
 
 procedure Tfrm_OAuth1.FetchParamsFromControls(const AParams: TRESTRequestParams);
 begin
-  AParams.EndpointAuth:= edt_OAuth1AuthEndpoint.Text;
-  AParams.EndpointAccessToken:= edt_OAuth1AccessTokenEndpoint.Text;
-  AParams.EndpointRequestToken:= edt_OAuth1RequestTokentEndpoint.Text;
-  AParams.EndpointRedirect:= edt_OAuth1RedirectEndpoint.Text;
+  AParams.EndpointAuth          := edt_OAuth1AuthEndpoint.Text;
+  AParams.EndpointAccessToken   := edt_OAuth1AccessTokenEndpoint.Text;
+  AParams.EndpointRequestToken  := edt_OAuth1RequestTokentEndpoint.Text;
+  AParams.EndpointRedirect      := edt_OAuth1RedirectEndpoint.Text;
 
-  AParams.AuthCode:= edt_OAuth1AuthCode.Text;
-  AParams.AccessToken:= edt_OAuth1AccessToken.Text;
-  AParams.AccessTokenSecret:= edt_OAuth1AccessTokenSecret.Text;
-  AParams.RequestToken:= edt_OAuth1RequestToken.Text;
-  AParams.RequestTokenSecret:= edt_OAuth1RequestTokenSecret.Text;
+  AParams.AuthCode              := edt_OAuth1AuthCode.Text;
+  AParams.AccessToken           := edt_OAuth1AccessToken.Text;
+  AParams.AccessTokenSecret     := edt_OAuth1AccessTokenSecret.Text;
+  AParams.RequestToken          := edt_OAuth1RequestToken.Text;
+  AParams.RequestTokenSecret    := edt_OAuth1RequestTokenSecret.Text;
 
-  AParams.ClientID:= edt_OAuth1ClientID.Text;
-  AParams.ClientSecret:= edt_OAuth1ClientSecret.Text;
+  AParams.ClientID              := edt_OAuth1ClientID.Text;
+  AParams.ClientSecret          := edt_OAuth1ClientSecret.Text;
 
-  AParams.OAuth1SignatureMethod:= cmb_SigningClass.Text;
+  AParams.OAuth1SignatureMethod := cmb_SigningClass.Text;
 end;
 
 procedure Tfrm_OAuth1.FormCreate(Sender: TObject);

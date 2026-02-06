@@ -4,6 +4,7 @@ object frmListaAPIs: TfrmListaAPIs
   Caption = 'Form1'
   ClientHeight = 515
   ClientWidth = 836
+  StyleBook = frm_Main.StyleBook1
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
@@ -17,8 +18,8 @@ object frmListaAPIs: TfrmListaAPIs
     Size.Height = 345.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
-    Viewport.Width = 685.000000000000000000
-    Viewport.Height = 320.000000000000000000
+    Viewport.Width = 689.000000000000000000
+    Viewport.Height = 345.000000000000000000
   end
   object ClientDataSet1: TClientDataSet
     Aggregates = <>

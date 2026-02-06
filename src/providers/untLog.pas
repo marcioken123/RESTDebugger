@@ -223,7 +223,9 @@ end;
 class procedure TLog.MyLogTemp(const psMessage: string; aControler: Tobject; const aIDErro: Integer;
   const pbShowError: Boolean; const ACriticalLog: TCriticalLog; const psName: String);
 begin
-  TLog.MyLog(psMessage, aControler, aIDErro, pbShowError, ACriticalLog, psName);
+  TThread.Synchronize(nil, procedure begin
+    TLog.MyLog(psMessage, aControler, aIDErro, pbShowError, ACriticalLog, psName);
+  end);
 end;
 
 class function TLog.getFileLogName(pDateTime: TDateTime): String;

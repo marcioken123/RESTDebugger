@@ -92,11 +92,10 @@ begin
           end;
         end;
       finally
-        PlaySound('notification', 0, SND_ASYNC);
-
         TThread.Synchronize(nil,
         procedure
         begin
+          PlaySound('notification', 0, SND_ASYNC);
           TWait.Done;
           frm_Main.tc_Response.ActiveTab := frm_Main.ti_Response_Body;
         end);

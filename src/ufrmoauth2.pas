@@ -73,7 +73,7 @@ implementation
 
 uses
   uMain_frm,
-  uOSUtils,
+  provider.OSUtils,
   REST.Types,
   REST.Utils,
   REST.Authenticator.OAuth,
@@ -171,20 +171,20 @@ begin
 
   if (edt_OAuth2AuthCode.Text = '') then
   begin
-    MessageDlg(RSProvideAuthCode,
-      TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-    EXIT;
+    MessageDlg(RSProvideAuthCode, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+    Exit;
   end;
+
   if (edt_OAuth2AccessTokenEndpoint.Text = '') then
   begin
     MessageDlg(RSProvideTokenEndPoint, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-    EXIT;
+    Exit;
   end;
+
   if (edt_OAuth2ClientID.Text = '') OR (edt_OAuth2ClientSecret.Text = '') then
   begin
-    MessageDlg(RSProvideClientIDAndClientSecret,
-      TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-    EXIT;
+    MessageDlg(RSProvideClientIDAndClientSecret, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+    Exit;
   end;
 
   LClient := TRESTClient.Create(self);
@@ -194,12 +194,13 @@ begin
   LRequest.Client := LClient;
   LRequest.Method := TRESTRequestMethod.rmPOST;
 
-  TRY
+  try
     LClient.BaseURL := edt_OAuth2AccessTokenEndpoint.Text;
     LRequest.AddParameter('code', edt_OAuth2AuthCode.Text);
     LRequest.AddParameter('client_id', edt_OAuth2ClientID.Text);
     LRequest.AddParameter('client_secret', edt_OAuth2ClientSecret.Text);
     LRequest.AddParameter('grant_type', 'authorization_code');
+
     if (edt_OAuth2RedirectEndpoint.Text <> '') then
       LRequest.AddParameter('redirect_uri', edt_OAuth2RedirectEndpoint.Text);
 
@@ -210,11 +211,10 @@ begin
       if LRequest.Response.GetSimpleValue('access_token', LValue) then
         edt_OAuth2AccessToken.Text := LValue;
     end;
-
-  FINALLY
+  finally
     FreeAndNIL(LRequest);
     FreeAndNIL(LClient);
-  END;
+  end;
 end;
 
 procedure Tfrm_OAuth2.PushParamsToControls(const AParams: TRESTRequestParams);

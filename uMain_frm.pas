@@ -38,7 +38,7 @@ uses
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, FMX.EditBox,
   FMX.Controls.Presentation, System.Net.URLClient, FMX.ScrollBox, FMX.Grid.Style,
   FMX.Memo.Types, Winapi.Messages, Winapi.ShellAPI, FMX.Platform, WinApi.Windows,
-  FMX.Platform.Win, FMX.Menus, FireDAC.Phys.Intf, FireDAC.DApt.Intf;
+  FMX.Platform.Win, FMX.Menus, FireDAC.Phys.Intf, FireDAC.DApt.Intf, REST.Authenticator.OAuth.WebForm.FMX;
 
 type
   Tfrm_Main = class(TForm)
@@ -160,6 +160,7 @@ type
     edt_Intervalo: TNumberBox;
     Label18: TLabel;
     Label19: TLabel;
+    StyleBook1: TStyleBook;
     procedure FormCreate(Sender: TObject);
     procedure btn_ExecuteRequestClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -191,12 +192,10 @@ type
     procedure StringGrid1HeaderClick(Column: TColumn);
     procedure btn_CopyToClipboardClick(Sender: TObject);
     procedure RESTResponseDataSetAdapterBeforeOpenDataSet(Sender: TObject);
-    procedure RESTClientValidateCertificate(const Sender: TObject;
-      const ARequest: TURLRequest; const Certificate: TCertificate;
+    procedure RESTClientValidateCertificate(const Sender: TObject; const ARequest: TURLRequest; const Certificate: TCertificate;
       var Accepted: Boolean);
-    procedure RESTClientNeedClientCertificate(const Sender: TObject;
-      const ARequest: TURLRequest; const ACertificateList: TCertificateList;
-      var AnIndex: Integer);
+    procedure RESTClientNeedClientCertificate(const Sender: TObject; const ARequest: TURLRequest;
+      const ACertificateList: TCertificateList; var AnIndex: Integer);
     procedure cmb_RequestURLKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure cbProxyChange(Sender: TObject);
     procedure cbTimeoutChange(Sender: TObject);
@@ -332,8 +331,7 @@ begin
         LNames := LNames + ', ';
       LNames := LNames + LComponent.ClassName;
     end;
-    MessageDlg(Format(RSComponentsCopied, [LNames]),
-      TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOK], 0);
+    MessageDlg(Format(RSComponentsCopied, [LNames]), TMsgDlgType.mtInformation, [TMsgDlgBtn.mbOK], 0);
   finally
     RESTClient.OnValidateCertificate := RESTClientValidateCertificate;
     RESTClient.OnNeedClientCertificate := RESTClientNeedClientCertificate;
@@ -443,8 +441,7 @@ begin
   cmb_RequestURLChange( Sender );
 end;
 
-procedure Tfrm_Main.cmb_RequestURLKeyDown(Sender: TObject; var Key: Word;
-  var KeyChar: Char; Shift: TShiftState);
+procedure Tfrm_Main.cmb_RequestURLKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
   if TComboEdit(Sender).Items.Count > 0 then
     if Key = vkReturn then
@@ -537,8 +534,7 @@ end;
 
 procedure Tfrm_Main.DoClearMRUList;
 begin
-  if (MessageDlg(RSConfirmClearRecentRequests, TMsgDlgType.mtConfirmation,
-    [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], 0, TMsgDlgBtn.mbNo) = mrYes) then
+  if (MessageDlg(RSConfirmClearRecentRequests, TMsgDlgType.mtConfirmation, [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], 0, TMsgDlgBtn.mbNo) = mrYes) then
   begin
     DoFetchRequestParamsFromControls;
 
@@ -570,11 +566,12 @@ begin
     begin
       LParameter.Name := LDialog.cmb_ParameterName.Text;
       LParameter.Value := LDialog.edt_ParameterValue.Text;
+
       if (LDialog.cmb_ParameterKind.ItemIndex > -1) then
-        LParameter.Kind := RESTRequestParameterKindFromString
-          (LDialog.cmb_ParameterKind.Items[LDialog.cmb_ParameterKind.ItemIndex])
+        LParameter.Kind := RESTRequestParameterKindFromString(LDialog.cmb_ParameterKind.Items[LDialog.cmb_ParameterKind.ItemIndex])
       else
         LParameter.Kind := DefaultRESTRequestParameterKind;
+
       if LDialog.cbx_DoNotEncode.IsChecked then
         LParameter.Options := LParameter.Options + [poDoNotEncode]
       else
@@ -594,7 +591,7 @@ begin
   if (lb_CustomParameters.ItemIndex < 0) then
   begin
     MessageDlg(RSNoCustomParameterSelected, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-    EXIT;
+    Exit;
   end;
 
   self.DoFetchRequestParamsFromControls;
@@ -610,31 +607,33 @@ begin
 end;
 
 procedure Tfrm_Main.DoDisplayHTTPResponse(ARequest: TRESTRequest; AClient: TRESTClient; AResponse: TRESTResponse);
-var
-  i: integer;
 begin
-  if AResponse.StatusCode >= 300 then
+  TThread.Synchronize(nil, procedure
+  var
+    i: integer;
   begin
-    lbl_LastRequestStats.FontColor := claRed;
-  end
-  else
-  begin
-    lbl_LastRequestStats.FontColor := claBlack;
-  end;
+    if AResponse.StatusCode >= 300 then
+    begin
+      lbl_LastRequestStats.FontColor := claRed;
+    end
+    else
+    begin
+      lbl_LastRequestStats.FontColor := claBlack;
+    end;
 
-  /// we need to duplicate the ampersands to display them in a label ... ...
-  lbl_LastRequestURL.Text := StringReplace( AResponse.FullRequestURI, '&', '&&', [rfReplaceAll] );
+    /// we need to duplicate the ampersands to display them in a label ... ...
+    lbl_LastRequestURL.Text := StringReplace( AResponse.FullRequestURI, '&', '&&', [rfReplaceAll] );
 
-  lbl_LastRequestStats.Text :=
-    Format(RSBytesOfDataReturnedAndTiming,
-    [AResponse.StatusCode, AResponse.StatusText, AResponse.ContentLength,
-    ARequest.ExecutionPerformance.PreProcessingTime, ARequest.ExecutionPerformance.ExecutionTime,
-    ARequest.ExecutionPerformance.PostProcessingTime, ARequest.ExecutionPerformance.TotalExecutionTime]);
+    lbl_LastRequestStats.Text := Format(RSBytesOfDataReturnedAndTiming,
+                                 [AResponse.StatusCode, AResponse.StatusText, AResponse.ContentLength,
+                                  ARequest.ExecutionPerformance.PreProcessingTime, ARequest.ExecutionPerformance.ExecutionTime,
+                                  ARequest.ExecutionPerformance.PostProcessingTime, ARequest.ExecutionPerformance.TotalExecutionTime]);
 
-  /// transfer http-headers into memo
-  memo_ResponseHeader.Lines.Clear;
-  for i := 0 to AResponse.Headers.Count - 1 do
-    memo_ResponseHeader.Lines.Add(AResponse.Headers[i]);
+    /// transfer http-headers into memo
+    memo_ResponseHeader.Lines.Clear;
+    for i := 0 to AResponse.Headers.Count - 1 do
+      memo_ResponseHeader.Lines.Add(AResponse.Headers[i]);
+  end);
 
   FillReponseContentMemo;
 end;
@@ -719,49 +718,51 @@ begin
   /// workaround for a bug in FMX - the onchange-events are triggered too early.
   /// this is not a problem for our objects, but we get an AV while querying a
   /// tedit for it's text.
-  if NOT Visible then
-    EXIT;
+  TThread.Synchronize(nil, procedure begin
+    if not Visible then
+      Exit;
 
-  if (cmb_RequestMethod.ItemIndex > -1) then
-    FRESTParams.Method := RESTRequestMethodFromString(cmb_RequestMethod.Items[cmb_RequestMethod.ItemIndex])
-  else
-    FRESTParams.Method := DefaultRESTRequestMethod;
+    if (cmb_RequestMethod.ItemIndex > -1) then
+      FRESTParams.Method := RESTRequestMethodFromString(cmb_RequestMethod.Items[cmb_RequestMethod.ItemIndex])
+    else
+      FRESTParams.Method := DefaultRESTRequestMethod;
 
-  LURL := Trim(cmb_RequestURL.Text);
-  I := LURL.IndexOf('+ -->');
-  if I > 0 then
-    LURL := Trim(LURL.Substring(0, I));
+    LURL := Trim(cmb_RequestURL.Text);
+    I := LURL.IndexOf('+ -->');
+    if I > 0 then
+      LURL := Trim(LURL.Substring(0, I));
 
-  cmb_RequestURL.Text := TURI.FixupForREST(LURL);
-  FRESTParams.URL := cmb_RequestURL.Text;
-  FRESTParams.Resource := edt_Resource.Text;
-  FRESTParams.ContentType := edt_ContentType.Text;
+    cmb_RequestURL.Text     := TURI.FixupForREST(LURL);
+    FRESTParams.URL         := cmb_RequestURL.Text;
+    FRESTParams.Resource    := edt_Resource.Text;
+    FRESTParams.ContentType := edt_ContentType.Text;
 
-  /// after fetching the resource, we try to re-create the parameter-list
-  //FRESTParams.CustomParams.FromString('', FRESTParams.Resource);
-  FRESTParams.CustomParams.CreateURLSegmentsFromString(FRESTParams.Resource);
+    /// after fetching the resource, we try to re-create the parameter-list
+    //FRESTParams.CustomParams.FromString('', FRESTParams.Resource);
+    FRESTParams.CustomParams.CreateURLSegmentsFromString(FRESTParams.Resource);
 
-  if (cmb_AuthMethod.ItemIndex > -1) then
-    FRESTParams.AuthMethod := RESTAuthMethodFromString(cmb_AuthMethod.Items[cmb_AuthMethod.ItemIndex])
-  else
-    FRESTParams.AuthMethod := DefaultRESTAuthMethod;
+    if (cmb_AuthMethod.ItemIndex > -1) then
+      FRESTParams.AuthMethod := RESTAuthMethodFromString(cmb_AuthMethod.Items[cmb_AuthMethod.ItemIndex])
+    else
+      FRESTParams.AuthMethod := DefaultRESTAuthMethod;
 
-  FRESTParams.AuthUsername    := edt_AuthUsername.Text;
-  FRESTParams.AuthUsernameKey := edt_AuthUsernameKey.Text;
-  FRESTParams.AuthPassword    := edt_AuthPassword.Text;
-  FRESTParams.AuthPasswordKey := edt_AuthPasswordKey.Text;
-  FRESTParams.ClientID        := edt_AuthClientID.Text;
-  FRESTParams.ClientSecret    := edt_AuthClientSecret.Text;
-  FRESTParams.AccessToken     := edt_AuthAccessToken.Text;
-  FRESTParams.RequestToken    := edt_AuthRequestToken.Text;
+    FRESTParams.AuthUsername    := edt_AuthUsername.Text;
+    FRESTParams.AuthUsernameKey := edt_AuthUsernameKey.Text;
+    FRESTParams.AuthPassword    := edt_AuthPassword.Text;
+    FRESTParams.AuthPasswordKey := edt_AuthPasswordKey.Text;
+    FRESTParams.ClientID        := edt_AuthClientID.Text;
+    FRESTParams.ClientSecret    := edt_AuthClientSecret.Text;
+    FRESTParams.AccessToken     := edt_AuthAccessToken.Text;
+    FRESTParams.RequestToken    := edt_AuthRequestToken.Text;
 
-  DoUpdateProxyStateLabel;
+    DoUpdateProxyStateLabel;
 
-  FRESTParams.CustomBody.Clear;
-  memo_RequestBody.Lines.WriteBOM := False;
-  memo_RequestBody.Lines.SaveToStream(FRESTParams.CustomBody, TEncoding.UTF8);
+    FRESTParams.CustomBody.Clear;
+    memo_RequestBody.Lines.WriteBOM := False;
+    memo_RequestBody.Lines.SaveToStream(FRESTParams.CustomBody, TEncoding.UTF8);
 
-  FRESTParams.DataSetView := cb_ViewAs.ItemIndex;
+    FRESTParams.DataSetView := cb_ViewAs.ItemIndex;
+  end);
 end;
 
 procedure Tfrm_Main.DoPushRequestParamsToControls;
@@ -808,16 +809,16 @@ begin
 
   lb_CustomParameters.BeginUpdate;
   lb_CustomParameters.Items.BeginUpdate;
-  TRY
+  try
     lb_CustomParameters.Clear;
     for LParameter IN FRESTParams.CustomParams do
     begin
       lb_CustomParameters.Items.AddObject(LParameter.ToString, LParameter);
     end;
-  FINALLY
+  finally
     lb_CustomParameters.Items.EndUpdate;
     lb_CustomParameters.EndUpdate;
-  END;
+  end;
 
   if (FRESTParams.CustomBody.Size > 0) then
   begin
@@ -982,8 +983,7 @@ begin
   EditRootElementTab.Text := EditRootElement.Text;
 end;
 
-procedure Tfrm_Main.EditRootElementKeyDown(Sender: TObject; var Key: Word;
-  var KeyChar: Char; Shift: TShiftState);
+procedure Tfrm_Main.EditRootElementKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
   if (KeyChar = #0) and (Key = 13) and (Shift = []) then
     UpdateRootElement;
@@ -999,11 +999,11 @@ var
   LIntf: IRESTResponseJSON;
 begin
   Assert(EditRootElement.Text = EditRootElementTab.Text);
+
   if (RESTResponse.RootElement <> EditRootElement.Text) or
      (cb_NestedFields.IsChecked <> RESTResponseDataSetAdapter.NestedElements){ or
      (cb_ViewAs.ItemIndex <> Integer(RESTResponseDataSetAdapter.TypesMode))} then
   begin
-
     SaveGridColumnWidths;
     try
      LIntf := RESTResponse;
@@ -1023,6 +1023,7 @@ begin
       end;
       raise;
     end;
+
     RESTResponseDataSetAdapter.NestedElements := cb_NestedFields.IsChecked;
     //RESTResponseDataSetAdapter.TypesMode := TJSONTypesMode(cb_ViewAs.ItemIndex);
     RestoreGridColumnWidths;
@@ -1054,8 +1055,7 @@ begin
     Message.Result:=DefWindowProc(TrayWnd, Message.MSG, Message.WParam, Message.LParam);
 end;
 
-procedure Tfrm_Main.EditRootElementTabKeyDown(Sender: TObject; var Key: Word;
-  var KeyChar: Char; Shift: TShiftState);
+procedure Tfrm_Main.EditRootElementTabKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
   if (KeyChar = #0) and (Key = 13) and (Shift = []) then
     UpdateRootElement;

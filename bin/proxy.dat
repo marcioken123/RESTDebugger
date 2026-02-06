@@ -7,7 +7,7 @@ password=
 
 [timeout]
 enabled=1
-value=30000
+value=0
 
 [FileInformation]
 DefaultStorageFolder=C:\Users\programador02\Documents\RESTDebugger\

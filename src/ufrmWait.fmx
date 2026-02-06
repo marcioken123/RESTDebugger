@@ -6,8 +6,10 @@ object Wait: TWait
   Caption = 'Please wait!'
   ClientHeight = 94
   ClientWidth = 485
+  Fill.Color = xFF2B2B2B
   Fill.Kind = Solid
   Position = OwnerFormCenter
+  StyleBook = frm_Main.StyleBook1
   StyleLookup = 'panelstyle'
   FormStyle = StayOnTop
   FormFactor.Width = 320
@@ -23,6 +25,7 @@ object Wait: TWait
     Size.PlatformDefault = False
     TextSettings.Font.Size = 18.000000000000000000
     Text = 'Working ...'
+    TabOrder = 1
   end
   object ArcProgressLoading: TArcProgress
     Max = 100.000000000000000000
