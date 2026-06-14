@@ -11,7 +11,7 @@ uses
 type
   TfrmListaAPIs = class(TForm)
     Grid1: TGrid;
-    ClientDataSet1: TClientDataSet;
+    cdsRequestAPI: TClientDataSet;
   private
     { Private declarations }
   public

@@ -257,8 +257,8 @@ end;
 
 procedure TRESTRequestParams.ResetToDefaults;
 begin
-  FURL := '';
-  FResource := '';
+  FURL := EmptyStr;
+  FResource := EmptyStr;
   FMethod := DefaultRESTRequestMethod;
 
   FContentType := '';
@@ -266,10 +266,10 @@ begin
   /// do NOT reset the proxy-settings!
 
   FAuthMethod := DefaultRESTAuthMethod;
-  FAuthUsername := '';
-  FAuthUsernameKey := '';
-  FAuthPassword := '';
-  FAuthPasswordKey := '';
+  FAuthUsername := EmptyStr;
+  FAuthUsernameKey := EmptyStr;
+  FAuthPassword := EmptyStr;
+  FAuthPasswordKey := EmptyStr;
 
   FClientID := '';
   FClientSecret := '';

@@ -18,13 +18,13 @@ object frmListaAPIs: TfrmListaAPIs
     Size.Height = 345.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
-    Viewport.Width = 689.000000000000000000
-    Viewport.Height = 345.000000000000000000
+    Viewport.Width = 685.000000000000000000
+    Viewport.Height = 320.000000000000000000
   end
-  object ClientDataSet1: TClientDataSet
+  object cdsRequestAPI: TClientDataSet
     Aggregates = <>
     Params = <>
-    Left = 464
-    Top = 64
+    Left = 232
+    Top = 32
   end
 end
