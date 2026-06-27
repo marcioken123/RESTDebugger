@@ -161,6 +161,11 @@ type
     Label18: TLabel;
     Label19: TLabel;
     StyleBook1: TStyleBook;
+    MainMenu1: TMainMenu;
+    MenuItem3: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem6: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure btn_ExecuteRequestClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -204,6 +209,8 @@ type
     procedure MenuItem2Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure tc_ResponseChange(Sender: TObject);
+    procedure MenuItem5Click(Sender: TObject);
+    procedure MenuItem4Click(Sender: TObject);
   public
     { Private declarations }
     TrayWnd: HWND;
@@ -273,7 +280,7 @@ uses
   provider.Consts,
   controller.UI,
   controller.Settings,
-  controller.RESTRequest;
+  controller.RESTRequest, ufrmListaAPIs;
 
 {$R *.fmx}
 
@@ -1297,6 +1304,21 @@ end;
 procedure Tfrm_Main.MenuItem2Click(Sender: TObject);
 begin
   application.Terminate;
+end;
+
+procedure Tfrm_Main.MenuItem4Click(Sender: TObject);
+begin
+  try
+    Application.CreateForm(TfrmListaAPIs, frmListaAPIs);
+    frmListaAPIs.ShowModal;
+  finally
+     frmListaAPIs.Free;
+  end;
+end;
+
+procedure Tfrm_Main.MenuItem5Click(Sender: TObject);
+begin
+  Application.Terminate;
 end;
 
 procedure Tfrm_Main.RESTClientNeedClientCertificate(const Sender: TObject;

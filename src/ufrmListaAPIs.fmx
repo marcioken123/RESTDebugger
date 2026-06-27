@@ -3,28 +3,101 @@ object frmListaAPIs: TfrmListaAPIs
   Top = 0
   Caption = 'Form1'
   ClientHeight = 515
-  ClientWidth = 836
-  StyleBook = frm_Main.StyleBook1
+  ClientWidth = 848
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
   DesignerMasterStyle = 0
   object Grid1: TGrid
+    Align = Client
     CanFocus = True
     ClipChildren = True
-    Position.X = 16.000000000000000000
-    Position.Y = 64.000000000000000000
-    Size.Width = 689.000000000000000000
-    Size.Height = 345.000000000000000000
+    Size.Width = 848.000000000000000000
+    Size.Height = 410.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
-    Viewport.Width = 685.000000000000000000
-    Viewport.Height = 320.000000000000000000
+    RowCount = 0
+    Options = [AlternatingRowBackground, ColumnResize, ColumnMove, ColLines, RowLines, RowSelect, Tabs, Header, HeaderClick, AutoDisplacement]
+    Viewport.Width = 844.000000000000000000
+    Viewport.Height = 385.000000000000000000
+  end
+  object Rectangle1: TRectangle
+    Align = Top
+    Size.Width = 848.000000000000000000
+    Size.Height = 105.000000000000000000
+    Size.PlatformDefault = False
   end
   object cdsRequestAPI: TClientDataSet
     Aggregates = <>
     Params = <>
-    Left = 232
+    Left = 96
+    Top = 24
+    object cdsRequestAPIID: TIntegerField
+      AutoGenerateValue = arAutoInc
+      FieldName = 'ID'
+    end
+    object cdsRequestAPIMETODO: TStringField
+      DisplayLabel = 'M'#233'todo'
+      FieldName = 'METODO'
+    end
+    object cdsRequestAPIURL: TStringField
+      DisplayWidth = 100
+      FieldName = 'URL'
+      Size = 200
+    end
+    object cdsRequestAPIBODY_REQUEST: TMemoField
+      FieldName = 'BODY_REQUEST'
+      BlobType = ftMemo
+      Size = 10000
+    end
+    object cdsRequestAPICONTENT_TYPE: TStringField
+      FieldName = 'CONTENT_TYPE'
+    end
+  end
+  object dtsRequestAPI: TDataSource
+    DataSet = cdsRequestAPI
+    Left = 184
     Top = 32
+  end
+  object BindSourceDB1: TBindSourceDB
+    DataSet = cdsRequestAPI
+    ScopeMappings = <>
+    Left = 272
+    Top = 32
+  end
+  object BindingsList1: TBindingsList
+    Methods = <>
+    OutputConverters = <>
+    Left = 20
+    Top = 5
+    object LinkGridToDataSourceBindSourceDB1: TLinkGridToDataSource
+      Category = 'Quick Bindings'
+      DataSource = BindSourceDB1
+      GridControl = Grid1
+      Columns = <
+        item
+          MemberName = 'ID'
+          Width = 30
+        end
+        item
+          MemberName = 'METODO'
+          Width = 60
+        end
+        item
+          MemberName = 'URL'
+          Width = 300
+        end
+        item
+          MemberName = 'BODY_REQUEST'
+          Header = 'Body Request'
+          Width = 300
+        end
+        item
+          MemberName = 'CONTENT_TYPE'
+          Header = 'Content Type'
+          Width = 100
+        end>
+    end
   end
 end
