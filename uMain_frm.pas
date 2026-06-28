@@ -51,7 +51,7 @@ type
     tc_Response: TTabControl;
     ti_Response_Headers: TTabItem;
     ti_Response_Body: TTabItem;
-    Rectangle1: TRectangle;
+    rect_header: TRectangle;
     memo_ResponseHeader: TMemo;
     memo_ResponseBody: TMemo;
     lbl_LastRequestStats: TLabel;
@@ -130,7 +130,7 @@ type
     edt_ProxyPort: TNumberBox;
     Label13: TLabel;
     btn_OAuthAssistant: TButton;
-    FDMemTable1: TFDMemTable;
+    fmtHistorico: TFDMemTable;
     ToolBar2: TToolBar;
     LabelJSONTab: TLabel;
     LabelRootElementTab: TLabel;
@@ -155,7 +155,6 @@ type
     btn_LoadRequest: TButton;
     btn_ExecuteRequest: TButton;
     Rectangle2: TRectangle;
-    Rectangle3: TRectangle;
     edt_Tentativas: TNumberBox;
     edt_Intervalo: TNumberBox;
     Label18: TLabel;
@@ -166,6 +165,10 @@ type
     MenuItem5: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem6: TMenuItem;
+    layout_historico: TLayout;
+    fmtHistoricoID: TAutoIncField;
+    fmtHistoricoDATAHORA: TDateTimeField;
+    FDMemTable1: TFDMemTable;
     procedure FormCreate(Sender: TObject);
     procedure btn_ExecuteRequestClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -280,7 +283,8 @@ uses
   provider.Consts,
   controller.UI,
   controller.Settings,
-  controller.RESTRequest, ufrmListaAPIs;
+  controller.RESTRequest,
+  ufrmListaAPIs;
 
 {$R *.fmx}
 
@@ -334,7 +338,7 @@ begin
     end;
     for LComponent in LList do
     begin
-      if LNames <> '' then
+      if LNames <> EmptyStr then
         LNames := LNames + ', ';
       LNames := LNames + LComponent.ClassName;
     end;
@@ -360,7 +364,34 @@ procedure Tfrm_Main.btn_ExecuteRequestClick(Sender: TObject);
 begin
   //TWait.Start;
   try
-    DoExecuteRequest;
+    TLog.MyLogTemp('Consumindo API ' + frm_Main.RESTClient.BaseURL, nil, 0, False, TCriticalLog.tlINFO);
+
+    TWait.Start;
+    frm_Main.RESTClient.ResetToDefaults;
+    frm_Main.DoFetchRequestParamsFromControls;
+    ConfigureHTTPConnection;
+
+    // Fielddefs are recreated with every request. If FieldDefs already exist,
+    // then RestResponseDatasetadpater will try to re-use them - which means that
+    // we would end up with no-matching Responses and FieldDefs for different requests
+    frm_Main.SaveGridColumnWidths;
+    frm_Main.RESTResponseDataSetAdapter.FieldDefs.Clear;
+
+    frm_Main.RESTRequest.ResetToDefaults;
+    frm_Main.RESTResponse.ResetToDefaults;
+    frm_Main.UpdateComponentProperties(False);
+
+    if Trim(frm_Main.RESTClient.BaseURL) = EmptyStr then
+    begin
+      TWait.Done;
+      MessageDlg(sRESTErrorEmptyURL, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+      exit;
+    end;
+
+    frm_Main.memo_ResponseHeader.Lines.Clear;
+    frm_Main.memo_ResponseBody.Lines.Clear;
+
+    DoExecuteRequest(frm_Main.RESTRequest);
   finally
     //TWait.Done;
   end;
@@ -650,7 +681,7 @@ var
   LPrevPos: Int64;
   s: AnsiString;
 begin
-  //EditRootElement.Text := '';
+  //EditRootElement.Text := EmptyStr;
   DoFetchRequestParamsFromControls;
   ConfigureHTTPConnection;
 
@@ -745,7 +776,7 @@ begin
     FRESTParams.ContentType := edt_ContentType.Text;
 
     /// after fetching the resource, we try to re-create the parameter-list
-    //FRESTParams.CustomParams.FromString('', FRESTParams.Resource);
+    //FRESTParams.CustomParams.FromString(EmptyStr, FRESTParams.Resource);
     FRESTParams.CustomParams.CreateURLSegmentsFromString(FRESTParams.Resource);
 
     if (cmb_AuthMethod.ItemIndex > -1) then
@@ -761,6 +792,7 @@ begin
     FRESTParams.ClientSecret    := edt_AuthClientSecret.Text;
     FRESTParams.AccessToken     := edt_AuthAccessToken.Text;
     FRESTParams.RequestToken    := edt_AuthRequestToken.Text;
+    FRESTParams.ID              := FRESTParams.CustomParams.Count + 1;
 
     DoUpdateProxyStateLabel;
 
@@ -794,7 +826,7 @@ begin
   else
   begin
     edt_ContentType.ItemIndex := -1;
-    edt_ContentType.Text := '';
+    edt_ContentType.Text := EmptyStr;
   end;
 
   s := RESTAuthMethodToString(FRESTParams.AuthMethod);
@@ -841,7 +873,7 @@ end;
 
 procedure Tfrm_Main.DoResetControls;
 begin
-  lbl_LastRequestStats.Text := '';
+  lbl_LastRequestStats.Text := EmptyStr;
 
   memo_RequestBody.Lines.Clear;
   memo_ResponseHeader.Lines.Clear;
@@ -851,15 +883,15 @@ begin
 
   /// try to set the itemindex to the default-value
   cmb_AuthMethod.ItemIndex := cmb_AuthMethod.Items.IndexOf(RESTAuthMethodToString(DefaultRESTAuthMethod));
-  edt_AuthUsername.Text := '';
-  edt_AuthPassword.Text := '';
+  edt_AuthUsername.Text := EmptyStr;
+  edt_AuthPassword.Text := EmptyStr;
 
   DoUpdateAuthEditFields;
 
   cbProxy.IsChecked := false;
-  edt_ProxyServer.Text := '';
-  edt_ProxyUser.Text := '';
-  edt_ProxyPass.Text := '';
+  edt_ProxyServer.Text := EmptyStr;
+  edt_ProxyUser.Text := EmptyStr;
+  edt_ProxyPass.Text := EmptyStr;
   edt_ProxyPort.Value := 1000;
 
   cbTimeout.IsChecked := True;
@@ -958,13 +990,18 @@ begin
   cmb_RequestURL.Items.BeginUpdate;
   cmb_RequestURL.Items.Clear;
   for LItem IN FMRUList.Items do
+  begin
     cmb_RequestURL.Items.AddObject(LItem.ToString, LItem);
+
+    if LItem.ID = 0 then
+      LItem.ID := cmb_RequestURL.Items.Count + 1;
+  end;
   cmb_RequestURL.Items.EndUpdate;
 
   /// we do know that the last executed request is on top of the
   /// mru-list. so the item-index of the dropdown must be set to
   /// zero.
-  if (cmb_RequestURL.Items.Count > 0) AND (cmb_RequestURL.Text <> '') then
+  if (cmb_RequestURL.Items.Count > 0) AND (cmb_RequestURL.Text <> EmptyStr) then
     cmb_RequestURL.ItemIndex := 0
   else
     cmb_RequestURL.ItemIndex := -1;
@@ -1071,7 +1108,7 @@ end;
 procedure Tfrm_Main.edt_ResourceExit(Sender: TObject);
 begin
   DoFetchRequestParamsFromControls;
-  //FRESTParams.CustomParams.FromString('', edt_Resource.Text);
+  //FRESTParams.CustomParams.FromString(EmptyStr, edt_Resource.Text);
   FRESTParams.CustomParams.CreateURLSegmentsFromString(edt_Resource.Text);
   DoPushRequestParamsToControls;
 end;
@@ -1162,7 +1199,7 @@ var
   pid, current_pid: DWORD;
   name: String;
 begin
-  name := ChangeFileExt(ExtractFileName(ParamStr(0)), '');
+  name := ChangeFileExt(ExtractFileName(ParamStr(0)), EmptyStr);
 
   appHandle := 0;
   pid := 0;
@@ -1193,7 +1230,7 @@ var
 begin
   //ShowWindow(FindWindowA('TFMAppClass', nil), SW_HIDE);
 
-  name := ChangeFileExt(ExtractFileName(ParamStr(0)), '');
+  name := ChangeFileExt(ExtractFileName(ParamStr(0)), EmptyStr);
 
   appHandle := 0;
   pid := 0;
@@ -1255,7 +1292,7 @@ begin
   if (Key = vkF9) then
   begin
     Key := 0;
-    DoExecuteRequest;
+    DoExecuteRequest(RESTRequest);
   end;
 
   inherited;
@@ -1277,7 +1314,7 @@ var
   I, J: Integer;
 begin
   Result := AHeader;
-  if RESTResponse.RootElement <> '' then
+  if RESTResponse.RootElement <> EmptyStr then
     if RESTResponse.JSONValue is TJSONObject then
       Result := RESTREsponse.RootElement + '.' + AHeader;
   // Normalize [0]
@@ -1401,12 +1438,12 @@ begin
     end
     else
     begin
-      if LPath <> '' then
+      if LPath <> EmptyStr then
         LPath := LPath + '.';
       LPath := LPath + Column.Header;
     end;
   end;
-  if LPath <> '' then
+  if LPath <> EmptyStr then
     EditRootElementTab.Text := LPath;
 end;
 
@@ -1424,7 +1461,7 @@ procedure Tfrm_Main.SynchEditCaret(AEdit1, AEdit2: TCustomEdit);
 var
   LCaret: Integer;
 begin
-  if AEdit2.Text <> '' then
+  if AEdit2.Text <> EmptyStr then
   begin
     AEdit2.SetFocus;
     AEdit2.SelLength := 0;

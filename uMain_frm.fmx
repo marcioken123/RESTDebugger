@@ -18,7 +18,7 @@ object frm_Main: Tfrm_Main
   DesignerMasterStyle = 0
   object gb_Response: TGroupBox
     Align = Client
-    Size.Width = 1055.000000000000000000
+    Size.Width = 846.000000000000000000
     Size.Height = 290.000000000000000000
     Size.PlatformDefault = False
     StyleLookup = 'groupboxstyle'
@@ -32,7 +32,7 @@ object frm_Main: Tfrm_Main
       Margins.Top = 10.000000000000000000
       Margins.Right = 10.000000000000000000
       Margins.Bottom = 10.000000000000000000
-      Size.Width = 1035.000000000000000000
+      Size.Width = 826.000000000000000000
       Size.Height = 216.000000000000000000
       Size.PlatformDefault = False
       TabIndex = 0
@@ -40,18 +40,18 @@ object frm_Main: Tfrm_Main
       TabPosition = Top
       OnChange = tc_ResponseChange
       Sizes = (
-        1035s
+        826s
         190s
-        1035s
+        826s
         190s
-        1035s
+        826s
         190s)
       object ti_Response_Headers: TTabItem
         CustomIcon = <
           item
           end>
         IsSelected = True
-        Size.Width = 344.000000000000000000
+        Size.Width = 274.000000000000000000
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'tabitemcustom'
@@ -65,11 +65,11 @@ object frm_Main: Tfrm_Main
           ReadOnly = True
           TextSettings.WordWrap = True
           Align = Client
-          Size.Width = 1035.000000000000000000
+          Size.Width = 826.000000000000000000
           Size.Height = 190.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
-          Viewport.Width = 1031.000000000000000000
+          Viewport.Width = 822.000000000000000000
           Viewport.Height = 186.000000000000000000
         end
       end
@@ -78,7 +78,7 @@ object frm_Main: Tfrm_Main
           item
           end>
         IsSelected = False
-        Size.Width = 344.000000000000000000
+        Size.Width = 274.000000000000000000
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = ''
@@ -93,15 +93,15 @@ object frm_Main: Tfrm_Main
           ReadOnly = True
           TextSettings.WordWrap = True
           Align = Client
-          Size.Width = 1035.000000000000000000
+          Size.Width = 826.000000000000000000
           Size.Height = 157.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
-          Viewport.Width = 1035.000000000000000000
-          Viewport.Height = 157.000000000000000000
+          Viewport.Width = 822.000000000000000000
+          Viewport.Height = 153.000000000000000000
         end
         object ToolBar1: TToolBar
-          Size.Width = 1035.000000000000000000
+          Size.Width = 826.000000000000000000
           Size.Height = 33.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 1
@@ -123,7 +123,7 @@ object frm_Main: Tfrm_Main
           end
           object ButtonRootElement: TButton
             Anchors = [akTop, akRight]
-            Position.X = 907.000000000000000000
+            Position.X = 698.000000000000000000
             Position.Y = 8.000000000000000000
             Size.Width = 121.000000000000000000
             Size.Height = 22.000000000000000000
@@ -138,7 +138,7 @@ object frm_Main: Tfrm_Main
             TabOrder = 3
             Position.X = 344.000000000000000000
             Position.Y = 8.000000000000000000
-            Size.Width = 691.000000000000000000
+            Size.Width = 482.000000000000000000
             Size.Height = 22.000000000000000000
             Size.PlatformDefault = False
             OnChangeTracking = EditRootElementChangeTracking
@@ -151,7 +151,7 @@ object frm_Main: Tfrm_Main
           item
           end>
         IsSelected = False
-        Size.Width = 345.000000000000000000
+        Size.Width = 276.000000000000000000
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = ''
@@ -164,18 +164,18 @@ object frm_Main: Tfrm_Main
           Align = Client
           CanFocus = True
           ClipChildren = True
-          Size.Width = 1035.000000000000000000
+          Size.Width = 826.000000000000000000
           Size.Height = 157.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           RowHeight = 21.000000000000000000
           Options = [ColumnResize, ColumnMove, ColLines, RowLines, Tabs, Header, HeaderClick, AutoDisplacement]
           OnHeaderClick = StringGrid1HeaderClick
-          Viewport.Width = 1035.000000000000000000
-          Viewport.Height = 157.000000000000000000
+          Viewport.Width = 806.000000000000000000
+          Viewport.Height = 132.000000000000000000
         end
         object ToolBar2: TToolBar
-          Size.Width = 1035.000000000000000000
+          Size.Width = 826.000000000000000000
           Size.Height = 33.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 1
@@ -197,7 +197,7 @@ object frm_Main: Tfrm_Main
           end
           object ButtonRootElementTab: TButton
             Anchors = [akTop, akRight]
-            Position.X = 907.000000000000000000
+            Position.X = 698.000000000000000000
             Position.Y = 8.000000000000000000
             Size.Width = 121.000000000000000000
             Size.Height = 22.000000000000000000
@@ -212,7 +212,7 @@ object frm_Main: Tfrm_Main
             TabOrder = 3
             Position.X = 264.000000000000000000
             Position.Y = 8.000000000000000000
-            Size.Width = 411.000000000000000000
+            Size.Width = 202.000000000000000000
             Size.Height = 22.000000000000000000
             Size.PlatformDefault = False
             OnChangeTracking = EditRootElementTabChangeTracking
@@ -220,7 +220,7 @@ object frm_Main: Tfrm_Main
           end
           object cb_NestedFields: TCheckBox
             Anchors = [akTop, akRight]
-            Position.X = 688.000000000000000000
+            Position.X = 479.000000000000000000
             Position.Y = 8.000000000000000000
             Size.Width = 70.000000000000000000
             Size.Height = 21.000000000000000000
@@ -230,7 +230,7 @@ object frm_Main: Tfrm_Main
           end
           object Label14: TLabel
             Anchors = [akTop, akRight]
-            Position.X = 760.000000000000000000
+            Position.X = 551.000000000000000000
             Position.Y = 10.000000000000000000
             Size.Width = 65.000000000000000000
             Size.Height = 17.000000000000000000
@@ -245,7 +245,7 @@ object frm_Main: Tfrm_Main
               'JSON'
               'Strings')
             ItemIndex = 2
-            Position.X = 826.000000000000000000
+            Position.X = 617.000000000000000000
             Position.Y = 8.000000000000000000
             Size.Width = 71.000000000000000000
             Size.Height = 22.000000000000000000
@@ -262,7 +262,7 @@ object frm_Main: Tfrm_Main
       Margins.Right = 10.000000000000000000
       Position.X = 10.000000000000000000
       Position.Y = 37.000000000000000000
-      Size.Width = 1035.000000000000000000
+      Size.Width = 826.000000000000000000
       Size.Height = 17.000000000000000000
       Size.PlatformDefault = False
       Text = 'lbl_LastRequestStats'
@@ -276,7 +276,7 @@ object frm_Main: Tfrm_Main
       Margins.Right = 10.000000000000000000
       Position.X = 10.000000000000000000
       Position.Y = 20.000000000000000000
-      Size.Width = 1035.000000000000000000
+      Size.Width = 826.000000000000000000
       Size.Height = 17.000000000000000000
       Size.PlatformDefault = False
       TextSettings.Font.StyleExt = {00060000000100000004000000}
@@ -288,19 +288,21 @@ object frm_Main: Tfrm_Main
     Align = Top
     Cursor = crVSplit
     MinSize = 275.000000000000000000
+    Position.X = 209.000000000000000000
     Position.Y = 385.000000000000000000
-    Size.Width = 1055.000000000000000000
+    Size.Width = 846.000000000000000000
     Size.Height = 10.000000000000000000
     Size.PlatformDefault = False
   end
   object pnl_Header: TLayout
-    Align = Top
+    Align = MostTop
     Size.Width = 1055.000000000000000000
     Size.Height = 107.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 2
-    object Rectangle1: TRectangle
+    object rect_header: TRectangle
       Align = Client
+      Cursor = crHandPoint
       Fill.Color = claDarkgray
       Size.Width = 1055.000000000000000000
       Size.Height = 107.000000000000000000
@@ -371,16 +373,17 @@ object frm_Main: Tfrm_Main
     Top = 16
   end
   object StatusBar: TStatusBar
+    Position.X = 209.000000000000000000
     Position.Y = 685.000000000000000000
     ShowSizeGrip = True
-    Size.Width = 1055.000000000000000000
+    Size.Width = 846.000000000000000000
     Size.Height = 22.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 3
     object lbl_ProxyState: TLabel
       Align = Client
       Margins.Left = 10.000000000000000000
-      Size.Width = 1045.000000000000000000
+      Size.Width = 836.000000000000000000
       Size.Height = 22.000000000000000000
       Size.PlatformDefault = False
       Text = 'lbl_ProxyState'
@@ -388,8 +391,9 @@ object frm_Main: Tfrm_Main
   end
   object layout_Request: TLayout
     Align = Top
+    Position.X = 209.000000000000000000
     Position.Y = 107.000000000000000000
-    Size.Width = 1055.000000000000000000
+    Size.Width = 846.000000000000000000
     Size.Height = 278.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 4
@@ -400,16 +404,16 @@ object frm_Main: Tfrm_Main
       Padding.Top = 10.000000000000000000
       Padding.Right = 10.000000000000000000
       Padding.Bottom = 10.000000000000000000
-      Size.Width = 1055.000000000000000000
-      Size.Height = 253.000000000000000000
+      Size.Width = 846.000000000000000000
+      Size.Height = 278.000000000000000000
       Size.PlatformDefault = False
       TextSettings.Font.StyleExt = {00070000000000000004000000}
       TabOrder = 0
       object tc_Request: TTabControl
         Align = Client
         FullSize = True
-        Size.Width = 686.000000000000000000
-        Size.Height = 233.000000000000000000
+        Size.Width = 477.000000000000000000
+        Size.Height = 258.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'tabcontrolstyle'
         TabIndex = 0
@@ -417,20 +421,20 @@ object frm_Main: Tfrm_Main
         TabPosition = Top
         OnChange = tc_RequestChange
         Sizes = (
-          686s
-          207s
-          686s
-          207s
-          686s
-          207s
-          686s
-          207s)
+          477s
+          232s
+          477s
+          232s
+          477s
+          232s
+          477s
+          232s)
         object ti_Request_Basic: TTabItem
           CustomIcon = <
             item
             end>
           IsSelected = True
-          Size.Width = 171.000000000000000000
+          Size.Width = 118.000000000000000000
           Size.Height = 26.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = ''
@@ -440,8 +444,8 @@ object frm_Main: Tfrm_Main
           ExplicitSize.cy = 24.000000000000000000
           object Layout1: TLayout
             Align = Client
-            Size.Width = 686.000000000000000000
-            Size.Height = 207.000000000000000000
+            Size.Width = 477.000000000000000000
+            Size.Height = 232.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 24
             object cmb_RequestMethod: TComboBox
@@ -467,12 +471,12 @@ object frm_Main: Tfrm_Main
               Anchors = [akLeft, akTop, akRight, akBottom]
               Position.X = 8.000000000000000000
               Position.Y = 128.000000000000000000
-              Size.Width = 670.000000000000000000
-              Size.Height = 68.000000000000000000
+              Size.Width = 461.000000000000000000
+              Size.Height = 93.000000000000000000
               Size.PlatformDefault = False
               TabOrder = 0
-              Viewport.Width = 666.000000000000000000
-              Viewport.Height = 64.000000000000000000
+              Viewport.Width = 457.000000000000000000
+              Viewport.Height = 89.000000000000000000
             end
             object cmb_RequestURL: TComboEdit
               Touch.InteractiveGestures = [LongTap, DoubleTap]
@@ -483,7 +487,7 @@ object frm_Main: Tfrm_Main
               ItemIndex = -1
               Position.X = 117.000000000000000000
               Position.Y = 32.000000000000000000
-              Size.Width = 540.000000000000000000
+              Size.Width = 331.000000000000000000
               Size.Height = 22.000000000000000000
               Size.PlatformDefault = False
               OnChange = cmb_RequestURLChange
@@ -510,7 +514,7 @@ object frm_Main: Tfrm_Main
             end
             object btn_ClearMRUList: TButton
               Anchors = [akTop, akRight]
-              Position.X = 657.000000000000000000
+              Position.X = 448.000000000000000000
               Position.Y = 30.000000000000000000
               Size.Width = 21.000000000000000000
               Size.Height = 25.000000000000000000
@@ -534,7 +538,7 @@ object frm_Main: Tfrm_Main
               ItemIndex = -1
               Position.X = 8.000000000000000000
               Position.Y = 78.000000000000000000
-              Size.Width = 670.000000000000000000
+              Size.Width = 461.000000000000000000
               Size.Height = 22.000000000000000000
               Size.PlatformDefault = False
               object Label16: TLabel
@@ -548,11 +552,12 @@ object frm_Main: Tfrm_Main
           end
         end
         object ti_Request_Advanced: TTabItem
+          Cursor = crHandPoint
           CustomIcon = <
             item
             end>
           IsSelected = False
-          Size.Width = 171.000000000000000000
+          Size.Width = 118.000000000000000000
           Size.Height = 26.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = ''
@@ -562,16 +567,16 @@ object frm_Main: Tfrm_Main
           ExplicitSize.cy = 24.000000000000000000
           object Layout2: TLayout
             Align = Client
-            Size.Width = 686.000000000000000000
-            Size.Height = 207.000000000000000000
+            Size.Width = 477.000000000000000000
+            Size.Height = 232.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 0
             object lb_CustomParameters: TListBox
               Anchors = [akLeft, akTop, akRight, akBottom]
               Position.X = 8.000000000000000000
               Position.Y = 85.000000000000000000
-              Size.Width = 571.000000000000000000
-              Size.Height = 114.000000000000000000
+              Size.Width = 362.000000000000000000
+              Size.Height = 139.000000000000000000
               Size.PlatformDefault = False
               TabOrder = 0
               OnDblClick = lb_CustomParametersDblClick
@@ -579,12 +584,12 @@ object frm_Main: Tfrm_Main
               DefaultItemStyles.ItemStyle = ''
               DefaultItemStyles.GroupHeaderStyle = ''
               DefaultItemStyles.GroupFooterStyle = ''
-              Viewport.Width = 571.000000000000000000
-              Viewport.Height = 114.000000000000000000
+              Viewport.Width = 358.000000000000000000
+              Viewport.Height = 135.000000000000000000
             end
             object btn_AddCustomParameter: TButton
               Anchors = [akTop, akRight]
-              Position.X = 588.000000000000000000
+              Position.X = 379.000000000000000000
               Position.Y = 84.000000000000000000
               Size.Width = 89.000000000000000000
               Size.Height = 22.000000000000000000
@@ -595,7 +600,7 @@ object frm_Main: Tfrm_Main
             end
             object btn_EditCustomParameter: TButton
               Anchors = [akTop, akRight]
-              Position.X = 588.000000000000000000
+              Position.X = 379.000000000000000000
               Position.Y = 111.000000000000000000
               Size.Width = 89.000000000000000000
               Size.Height = 22.000000000000000000
@@ -606,7 +611,7 @@ object frm_Main: Tfrm_Main
             end
             object btn_DeleteCustomParameter: TButton
               Anchors = [akTop, akRight]
-              Position.X = 588.000000000000000000
+              Position.X = 379.000000000000000000
               Position.Y = 138.000000000000000000
               Size.Width = 89.000000000000000000
               Size.Height = 22.000000000000000000
@@ -621,7 +626,7 @@ object frm_Main: Tfrm_Main
               TabOrder = 4
               Position.X = 8.000000000000000000
               Position.Y = 30.000000000000000000
-              Size.Width = 669.000000000000000000
+              Size.Width = 460.000000000000000000
               Size.Height = 22.000000000000000000
               Size.PlatformDefault = False
               OnExit = edt_ResourceExit
@@ -644,11 +649,12 @@ object frm_Main: Tfrm_Main
           end
         end
         object ti_Request_Auth: TTabItem
+          Cursor = crHandPoint
           CustomIcon = <
             item
             end>
           IsSelected = False
-          Size.Width = 171.000000000000000000
+          Size.Width = 118.000000000000000000
           Size.Height = 26.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = ''
@@ -658,8 +664,8 @@ object frm_Main: Tfrm_Main
           ExplicitSize.cy = 24.000000000000000000
           object Layout3: TLayout
             Align = Client
-            Size.Width = 686.000000000000000000
-            Size.Height = 207.000000000000000000
+            Size.Width = 477.000000000000000000
+            Size.Height = 232.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 0
             object cmb_AuthMethod: TComboBox
@@ -815,8 +821,8 @@ object frm_Main: Tfrm_Main
             end
             object btn_OAuthAssistant: TButton
               Anchors = [akRight, akBottom]
-              Position.X = 500.000000000000000000
-              Position.Y = 174.000000000000000000
+              Position.X = 291.000000000000000000
+              Position.Y = 199.000000000000000000
               Size.Width = 180.000000000000000000
               Size.Height = 26.000000000000000000
               Size.PlatformDefault = False
@@ -827,11 +833,12 @@ object frm_Main: Tfrm_Main
           end
         end
         object Connection: TTabItem
+          Cursor = crHandPoint
           CustomIcon = <
             item
             end>
           IsSelected = False
-          Size.Width = 171.000000000000000000
+          Size.Width = 121.000000000000000000
           Size.Height = 26.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = ''
@@ -958,10 +965,10 @@ object frm_Main: Tfrm_Main
         Margins.Left = 5.000000000000000000
         Margins.Top = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.X = 872.000000000000000000
+        Position.X = 663.000000000000000000
         Position.Y = 15.000000000000000000
         Size.Width = 173.000000000000000000
-        Size.Height = 223.000000000000000000
+        Size.Height = 248.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
         object btn_CopyToClipboard: TButton
@@ -1021,7 +1028,6 @@ object frm_Main: Tfrm_Main
           Text = 'Send Request'
           TextSettings.Font.Size = 14.000000000000000000
           TextSettings.Font.StyleExt = {00070000000000000004000000}
-          TextSettings.FontColor = claWhite
           TextSettings.WordWrap = True
           OnClick = btn_ExecuteRequestClick
         end
@@ -1029,10 +1035,10 @@ object frm_Main: Tfrm_Main
       object Rectangle2: TRectangle
         Align = Right
         Fill.Color = claSilver
-        Position.X = 696.000000000000000000
+        Position.X = 487.000000000000000000
         Position.Y = 10.000000000000000000
         Size.Width = 171.000000000000000000
-        Size.Height = 233.000000000000000000
+        Size.Height = 258.000000000000000000
         Size.PlatformDefault = False
         Stroke.Kind = None
       end
@@ -1042,7 +1048,7 @@ object frm_Main: Tfrm_Main
         StyleLookup = 'edt_TentativasStyle1'
         TabOrder = 3
         Cursor = crIBeam
-        Position.X = 712.000000000000000000
+        Position.X = 503.000000000000000000
         Position.Y = 48.000000000000000000
         Size.Width = 137.000000000000000000
         Size.Height = 22.000000000000000000
@@ -1054,7 +1060,7 @@ object frm_Main: Tfrm_Main
         StyleLookup = 'edt_TentativasStyle1'
         TabOrder = 4
         Cursor = crIBeam
-        Position.X = 712.000000000000000000
+        Position.X = 503.000000000000000000
         Position.Y = 104.000000000000000000
         Size.Width = 137.000000000000000000
         Size.Height = 22.000000000000000000
@@ -1062,26 +1068,18 @@ object frm_Main: Tfrm_Main
       end
       object Label18: TLabel
         Anchors = [akTop, akRight]
-        Position.X = 712.000000000000000000
+        Position.X = 503.000000000000000000
         Position.Y = 24.000000000000000000
         Text = 'Tentativas:'
         TabOrder = 5
       end
       object Label19: TLabel
         Anchors = [akTop, akRight]
-        Position.X = 712.000000000000000000
+        Position.X = 503.000000000000000000
         Position.Y = 80.000000000000000000
         Text = 'Intervalo:'
         TabOrder = 6
       end
-    end
-    object Rectangle3: TRectangle
-      Align = Top
-      Fill.Color = claDimgray
-      Size.Width = 1055.000000000000000000
-      Size.Height = 25.000000000000000000
-      Size.PlatformDefault = False
-      Stroke.Kind = None
     end
   end
   object PopupMenu1: TPopupMenu
@@ -31237,6 +31235,14 @@ object frm_Main: Tfrm_Main
       end
     end
   end
+  object layout_historico: TLayout
+    Align = MostLeft
+    Position.Y = 107.000000000000000000
+    Size.Width = 209.000000000000000000
+    Size.Height = 600.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 22
+  end
   object RESTClient: TRESTClient
     Accept = 'application/json;q=0.9,text/plain;q=0.9,text/html'
     AcceptCharset = 'UTF-8'
@@ -31264,7 +31270,7 @@ object frm_Main: Tfrm_Main
     Top = 586
   end
   object RESTResponseDataSetAdapter: TRESTResponseDataSetAdapter
-    Dataset = FDMemTable1
+    Dataset = fmtHistorico
     FieldDefs = <>
     Response = RESTResponse
     OnBeforeOpenDataSet = RESTResponseDataSetAdapterBeforeOpenDataSet
@@ -31305,19 +31311,36 @@ object frm_Main: Tfrm_Main
     end
   end
   object BindSourceDB1: TBindSourceDB
-    DataSet = FDMemTable1
+    DataSet = fmtHistorico
     ScopeMappings = <>
     Left = 424
     Top = 416
   end
-  object FDMemTable1: TFDMemTable
+  object fmtHistorico: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
     ResourceOptions.SilentMode = True
     UpdateOptions.AssignedValues = [uvCheckRequired]
     UpdateOptions.CheckRequired = False
-    Left = 656
-    Top = 427
+    Left = 392
+    Top = 11
+    object fmtHistoricoID: TAutoIncField
+      FieldName = 'ID'
+    end
+    object fmtHistoricoDATAHORA: TDateTimeField
+      FieldName = 'DATAHORA'
+    end
+  end
+  object FDMemTable1: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 392
+    Top = 64
   end
 end

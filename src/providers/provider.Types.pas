@@ -23,6 +23,7 @@ type
 
   TRESTRequestParams = class(TObject)
   private
+    FID: Integer;
     FMethod: TRESTRequestMethod;
     FURL: string;
     FResource: string;
@@ -75,6 +76,7 @@ type
 
     function ToString: string; override;
 
+    property ID: Integer read FID write FID;
     property URL: string read FURL write FURL;
     property Resource: string read FResource write SetResource;
     property Method: TRESTRequestMethod read FMethod write FMethod;
@@ -193,7 +195,7 @@ var
   RStr: RawByteString;
   RStrB: TBytes absolute RStr;
 begin
-  Result := '';
+  Result := EmptyStr;
   RStr := UTF8Encode(S);
   for i := 0 to Length(RStr) - 1 do
   begin
@@ -221,7 +223,7 @@ begin
       Inc(i, 2);
     end;
   except
-    Result := '';
+    Result := EmptyStr;
     Exit;
   end;
   for i := 0 to Length(RStr) - 1 do
@@ -261,7 +263,7 @@ begin
   FResource := EmptyStr;
   FMethod := DefaultRESTRequestMethod;
 
-  FContentType := '';
+  FContentType := EmptyStr;
 
   /// do NOT reset the proxy-settings!
 
@@ -271,23 +273,23 @@ begin
   FAuthPassword := EmptyStr;
   FAuthPasswordKey := EmptyStr;
 
-  FClientID := '';
-  FClientSecret := '';
-  FAuthCode := '';
-  FAccessToken := '';
-  FAccessTokenSecret := '';
-  FRequestToken := '';
-  FRequestTokenSecret := '';
-  FRefreshToken := '';
-  FOAuth1SignatureMethod := '';
-  FOAuth2ResponseType := '';
+  FClientID := EmptyStr;
+  FClientSecret := EmptyStr;
+  FAuthCode := EmptyStr;
+  FAccessToken := EmptyStr;
+  FAccessTokenSecret := EmptyStr;
+  FRequestToken := EmptyStr;
+  FRequestTokenSecret := EmptyStr;
+  FRefreshToken := EmptyStr;
+  FOAuth1SignatureMethod := EmptyStr;
+  FOAuth2ResponseType := EmptyStr;
 
-  FEndpointAuth := '';
-  FEndpointAccessToken := '';
-  FEndpointRequestToken := '';
-  FEndpointRedirect := '';
+  FEndpointAuth := EmptyStr;
+  FEndpointAccessToken := EmptyStr;
+  FEndpointRequestToken := EmptyStr;
+  FEndpointRedirect := EmptyStr;
 
-  FAuthScope := '';
+  FAuthScope := EmptyStr;
 
   FCustomParams.Clear;
   FCustomBody.Clear;
@@ -361,6 +363,11 @@ var
   LObject: TJSONObject;
 begin
   LRoot := TJSONObject.Create;
+
+//  if FID = 0 then
+//    FID := CustomParams.;
+
+  LRoot.AddPair(TJSONPair.Create('id', TJSONNumber.Create(FID)));
   LRoot.AddPair(TJSONPair.Create('method', TJSONString.Create(RESTRequestMethodToString(FMethod))));
   LRoot.AddPair(TJSONPair.Create('url', TJSONString.Create(FURL)));
   LRoot.AddPair(TJSONPair.Create('resource', TJSONString.Create(FResource)));
@@ -650,7 +657,7 @@ var
   S: string;
 begin
   Result := FURL;
-  if (FResource <> '') then
+  if (FResource <> EmptyStr) then
   begin
     /// just a minimal fixing of the data for display
     while EndsText('/', Result) do

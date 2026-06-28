@@ -28,13 +28,13 @@ uses
   controller.UI in 'src\controllers\controller.UI.pas',
   controller.Settings in 'src\controllers\controller.Settings.pas',
   controller.RESTRequest in 'src\controllers\controller.RESTRequest.pas',
-  udmRESTDebugger in 'src\dao\udmRESTDebugger.pas' {dmRestDebugger: TDataModule};
+  udmRESTDebugger in 'src\dao\udmRESTDebugger.pas', System.SysUtils {dmRestDebugger: TDataModule};
 
 {$R *.res}
 
 begin
-  TLog.MyLogTemp('', nil, 0, False, TCriticalLog.tlINFO);
-  TLog.MyLogTemp('', nil, 0, False, TCriticalLog.tlINFO);
+  TLog.MyLogTemp(EmptyStr, nil, 0, False, TCriticalLog.tlINFO);
+  TLog.MyLogTemp(EmptyStr, nil, 0, False, TCriticalLog.tlINFO);
   TLog.MyLogTemp('***********************************************', nil, 0, False, TCriticalLog.tlINFO);
   TLog.MyLogTemp('Inicialização do REST Debugger', nil, 0, False, TCriticalLog.tlINFO);
 
