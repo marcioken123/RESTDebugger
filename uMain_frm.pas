@@ -38,7 +38,7 @@ uses
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, FMX.EditBox,
   FMX.Controls.Presentation, System.Net.URLClient, FMX.ScrollBox, FMX.Grid.Style,
   FMX.Memo.Types, Winapi.Messages, Winapi.ShellAPI, FMX.Platform, WinApi.Windows,
-  FMX.Platform.Win, FMX.Menus, FireDAC.Phys.Intf, FireDAC.DApt.Intf, REST.Authenticator.OAuth.WebForm.FMX;
+  FMX.Platform.Win, FMX.Menus, FireDAC.Phys.Intf, FireDAC.DApt.Intf;
 
 type
   Tfrm_Main = class(TForm)
@@ -169,6 +169,9 @@ type
     fmtHistoricoID: TAutoIncField;
     fmtHistoricoDATAHORA: TDateTimeField;
     FDMemTable1: TFDMemTable;
+    fmtHistoricoID_REQUEST: TIntegerField;
+    Grid1: TGrid;
+    LinkGridToDataSourceBindSourceDB12: TLinkGridToDataSource;
     procedure FormCreate(Sender: TObject);
     procedure btn_ExecuteRequestClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -229,36 +232,6 @@ type
     FPopupClosed : boolean;
 
     procedure TrayWndProc(var Message: TMessage);
-    procedure InitRequestMethodCombo;
-    procedure InitAuthMethodCombo;
-
-    procedure DoResetControls;
-    procedure DoFetchRequestParamsFromControls;
-    procedure DoPushRequestParamsToControls;
-    procedure DoUpdateProxyStateLabel;
-
-    procedure DoAddCustomParameter;
-    procedure DoEditCustomParameter;
-    procedure DoDeleteCustomParameter;
-
-    procedure DoUpdateAuthEditFields;
-
-    procedure DoAddToMRUList(const AParams: TRESTRequestParams);
-    procedure DoClearMRUList;
-    procedure DoUpdateMRUList;
-//    procedure DoClearRequest;
-
-    procedure DoCallOAuthAssistant;
-
-    procedure DoDisplayHTTPResponse(ARequest: TRESTRequest; AClient: TRESTClient; AResponse: TRESTResponse);
-
-    procedure SynchEditCaret(AEdit1, AEdit2: TCustomEdit);
-    procedure UpdateRootElement;
-    procedure UpdateComponentProperties(ABodyAsValue: Boolean);
-
-    procedure SaveGridColumnWidths;
-    procedure RestoreGridColumnWidths;
-    function MakeWidthKey(const AHeader: string): string;
 
     { Public declarations }
     procedure KeyDown(var Key: Word; var KeyChar: Char; Shift: TShiftState); override;
@@ -270,18 +243,14 @@ var
 implementation
 
 uses
+  controller.MainForm,
 {$IFDEF MSWINDOWS}
   System.Net.HttpClient.Win,
 {$ENDIF}
   System.UIConsts,
-  ufrmOAuth1,
-  ufrmOAuth2,
-  ufrmCustomHeaderDlg,
   uComponentToClipboard,
-
   untLog,
   provider.Consts,
-  controller.UI,
   controller.Settings,
   controller.RESTRequest,
   ufrmListaAPIs;
@@ -486,542 +455,6 @@ begin
       btn_ExecuteRequestClick(nil);
 end;
 
-procedure Tfrm_Main.DoAddCustomParameter;
-var
-  LParameter: TRESTRequestParameter;
-  LDialog: Tfrm_CustomHeaderDlg;
-  LKind: TRESTRequestParameterKind;
-begin
-  self.DoFetchRequestParamsFromControls;
-
-  LDialog := Tfrm_CustomHeaderDlg.Create(self, NIL);
-  try
-    if (LDialog.ShowModal = mrOK) then
-    begin
-      if (LDialog.cmb_ParameterKind.ItemIndex > -1) then
-        LKind := RESTRequestParameterKindFromString
-          (LDialog.cmb_ParameterKind.Items[LDialog.cmb_ParameterKind.ItemIndex])
-      else
-        LKind := DefaultRESTRequestParameterKind;
-
-      LParameter := FRESTParams.CustomParams.AddItem;
-      LParameter.Name := LDialog.cmb_ParameterName.Text;
-      LParameter.Value := LDialog.edt_ParameterValue.Text;
-      LParameter.Kind := LKind;
-      if LDialog.cbx_DoNotEncode.IsChecked then
-        LParameter.Options := LParameter.Options + [poDoNotEncode]
-      else
-        LParameter.Options := LParameter.Options - [poDoNotEncode];
-
-      DoPushRequestParamsToControls;
-    end;
-  finally
-    LDialog.Release;
-  end;
-end;
-
-procedure Tfrm_Main.DoAddToMRUList(const AParams: TRESTRequestParams);
-begin
-  Assert(Assigned(AParams));
-
-  FMRUList.AddItem(FRESTParams);
-  DoUpdateMRUList;
-end;
-
-procedure Tfrm_Main.DoCallOAuthAssistant;
-var
-  frm1: Tfrm_OAuth1;
-  frm2: Tfrm_OAuth2;
-  res: Integer;
-begin
-  DoFetchRequestParamsFromControls;
-
-  if (FRESTParams.AuthMethod = amOAUTH) then
-  begin
-    frm1 := Tfrm_OAuth1.Create(self);
-    TRY
-      frm1.PushParamsToControls(FRESTParams);
-      res := frm1.ShowModal;
-
-      if IsPositiveResult(res) then
-      begin
-        frm1.FetchParamsFromControls(FRESTParams);
-        DoPushRequestParamsToControls;
-      end;
-    FINALLY
-      frm1.Release;
-    END;
-  end
-  else if (FRESTParams.AuthMethod = amOAUTH2) then
-  begin
-    frm2 := Tfrm_OAuth2.Create(self);
-    TRY
-      frm2.PushParamsToControls(FRESTParams);
-      res := frm2.ShowModal;
-
-      if IsPositiveResult(res) then
-      begin
-        frm2.FetchParamsFromControls(FRESTParams);
-        DoPushRequestParamsToControls;
-      end;
-    FINALLY
-      frm2.Release;
-    END;
-  end;
-end;
-
-procedure Tfrm_Main.DoClearMRUList;
-begin
-  if (MessageDlg(RSConfirmClearRecentRequests, TMsgDlgType.mtConfirmation, [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], 0, TMsgDlgBtn.mbNo) = mrYes) then
-  begin
-    DoFetchRequestParamsFromControls;
-
-    FMRUList.Clear;
-    cmb_RequestURL.Items.Clear;
-
-    DoPushRequestParamsToControls;
-  end;
-end;
-
-procedure Tfrm_Main.DoEditCustomParameter;
-var
-  LParameter: TRESTRequestParameter;
-  LDialog: Tfrm_CustomHeaderDlg;
-begin
-  if (lb_CustomParameters.ItemIndex < 0) then
-  begin
-    MessageDlg(RSNoCustomParameterSelected, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-    EXIT;
-  end;
-
-  DoFetchRequestParamsFromControls;
-
-  LParameter := FRESTParams.CustomParams.ParameterByIndex(lb_CustomParameters.ItemIndex);
-
-  LDialog := Tfrm_CustomHeaderDlg.Create(self, LParameter);
-  try
-    if (LDialog.ShowModal = mrOK) then
-    begin
-      LParameter.Name := LDialog.cmb_ParameterName.Text;
-      LParameter.Value := LDialog.edt_ParameterValue.Text;
-
-      if (LDialog.cmb_ParameterKind.ItemIndex > -1) then
-        LParameter.Kind := RESTRequestParameterKindFromString(LDialog.cmb_ParameterKind.Items[LDialog.cmb_ParameterKind.ItemIndex])
-      else
-        LParameter.Kind := DefaultRESTRequestParameterKind;
-
-      if LDialog.cbx_DoNotEncode.IsChecked then
-        LParameter.Options := LParameter.Options + [poDoNotEncode]
-      else
-        LParameter.Options := LParameter.Options - [poDoNotEncode];
-
-      self.DoPushRequestParamsToControls;
-    end;
-  finally
-    LDialog.Release;
-  end;
-end;
-
-procedure Tfrm_Main.DoDeleteCustomParameter;
-var
-  LParameter: TRESTRequestParameter;
-begin
-  if (lb_CustomParameters.ItemIndex < 0) then
-  begin
-    MessageDlg(RSNoCustomParameterSelected, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
-    Exit;
-  end;
-
-  self.DoFetchRequestParamsFromControls;
-
-  LParameter := FRESTParams.CustomParams.ParameterByIndex(lb_CustomParameters.ItemIndex);
-
-  if (MessageDlg(RSConfirmDeleteCustomParameter + LineFeed + '"' + LParameter.ToString + '"?',
-    TMsgDlgType.mtConfirmation, [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], 0, TMsgDlgBtn.mbNo) = mrYes) then
-  begin
-    FRESTParams.CustomParams.Delete(LParameter);
-    DoPushRequestParamsToControls;
-  end;
-end;
-
-procedure Tfrm_Main.DoDisplayHTTPResponse(ARequest: TRESTRequest; AClient: TRESTClient; AResponse: TRESTResponse);
-begin
-  TThread.Synchronize(nil, procedure
-  var
-    i: integer;
-  begin
-    if AResponse.StatusCode >= 300 then
-    begin
-      lbl_LastRequestStats.FontColor := claRed;
-    end
-    else
-    begin
-      lbl_LastRequestStats.FontColor := claBlack;
-    end;
-
-    /// we need to duplicate the ampersands to display them in a label ... ...
-    lbl_LastRequestURL.Text := StringReplace( AResponse.FullRequestURI, '&', '&&', [rfReplaceAll] );
-
-    lbl_LastRequestStats.Text := Format(RSBytesOfDataReturnedAndTiming,
-                                 [AResponse.StatusCode, AResponse.StatusText, AResponse.ContentLength,
-                                  ARequest.ExecutionPerformance.PreProcessingTime, ARequest.ExecutionPerformance.ExecutionTime,
-                                  ARequest.ExecutionPerformance.PostProcessingTime, ARequest.ExecutionPerformance.TotalExecutionTime]);
-
-    /// transfer http-headers into memo
-    memo_ResponseHeader.Lines.Clear;
-    for i := 0 to AResponse.Headers.Count - 1 do
-      memo_ResponseHeader.Lines.Add(AResponse.Headers[i]);
-  end);
-
-  FillReponseContentMemo;
-end;
-
-procedure Tfrm_Main.UpdateComponentProperties(ABodyAsValue: Boolean);
-var
-  LPrevPos: Int64;
-  s: AnsiString;
-begin
-  //EditRootElement.Text := EmptyStr;
-  DoFetchRequestParamsFromControls;
-  ConfigureHTTPConnection;
-
-  RESTClient.BaseURL := cmb_RequestURL.Text;
-  RESTRequest.Resource := FRESTParams.Resource;
-
-  RESTRequest.Params.Clear;
-  RESTRequest.Params.Assign(FRESTParams.CustomParams);
-
-  if FRESTParams.CustomBody.Size > 0 then
-    if ABodyAsValue then
-    begin
-      LPrevPos := FRESTParams.CustomBody.Position;
-      try
-        FRESTParams.CustomBody.Position := 0;
-        SetLength(s, FRESTParams.CustomBody.Size);
-        FRESTParams.CustomBody.Read(s[1], FRESTParams.CustomBody.Size);
-        RESTRequest.AddBody(s, ContentTypeFromString(FRESTParams.ContentType));
-      finally
-        FRESTParams.CustomBody.Position := LPrevPos;
-      end;
-    end
-    else
-      RESTRequest.AddBody(FRESTParams.CustomBody, ContentTypeFromString(FRESTParams.ContentType));
-
-  RESTRequest.Method := FRESTParams.Method;
-
-  case FRESTParams.AuthMethod of
-    TRESTAuthMethod.amNONE:
-      begin
-        RESTClient.Authenticator := NIL;
-      end;
-    TRESTAuthMethod.amSIMPLE:
-      begin
-        RESTClient.Authenticator := SimpleAuthenticator;
-        SimpleAuthenticator.Username := FRESTParams.AuthUsername;
-        SimpleAuthenticator.UsernameKey := FRESTParams.AuthUsernameKey;
-        SimpleAuthenticator.Password := FRESTParams.AuthPassword;
-        SimpleAuthenticator.PasswordKey := FRESTParams.AuthPasswordKey;
-      end;
-    TRESTAuthMethod.amBASIC:
-      begin
-        RESTClient.Authenticator := HTTPBasicAuthenticator;
-        HTTPBasicAuthenticator.Username := FRESTParams.AuthUsername;
-        HTTPBasicAuthenticator.Password := FRESTParams.AuthPassword;
-      end;
-    TRESTAuthMethod.amOAUTH:
-      begin
-        RESTClient.Authenticator := OAuth1Authenticator;
-        OAuth1Authenticator.ConsumerKey := FRESTParams.ClientID;
-        OAuth1Authenticator.ConsumerSecret := FRESTParams.ClientSecret;
-        OAuth1Authenticator.AccessToken := FRESTParams.AccessToken;
-        OAuth1Authenticator.AccessTokenSecret := FRESTParams.AccessTokenSecret;
-      end;
-    TRESTAuthMethod.amOAUTH2:
-      begin
-        RESTClient.Authenticator := OAuth2Authenticator;
-        OAuth2Authenticator.AccessToken := FRESTParams.AccessToken;
-      end;
-  else
-    raise ERESTException.Create(sRESTUnsupportedAuthMethod);
-  end;
-
-  RESTRequest.Client := RESTClient;
-end;
-
-procedure Tfrm_Main.DoFetchRequestParamsFromControls;
-var
-  LURL: string;
-  I: Integer;
-begin
-  /// workaround for a bug in FMX - the onchange-events are triggered too early.
-  /// this is not a problem for our objects, but we get an AV while querying a
-  /// tedit for it's text.
-  TThread.Synchronize(nil, procedure begin
-    if not Visible then
-      Exit;
-
-    if (cmb_RequestMethod.ItemIndex > -1) then
-      FRESTParams.Method := RESTRequestMethodFromString(cmb_RequestMethod.Items[cmb_RequestMethod.ItemIndex])
-    else
-      FRESTParams.Method := DefaultRESTRequestMethod;
-
-    LURL := Trim(cmb_RequestURL.Text);
-    I := LURL.IndexOf('+ -->');
-    if I > 0 then
-      LURL := Trim(LURL.Substring(0, I));
-
-    cmb_RequestURL.Text     := TURI.FixupForREST(LURL);
-    FRESTParams.URL         := cmb_RequestURL.Text;
-    FRESTParams.Resource    := edt_Resource.Text;
-    FRESTParams.ContentType := edt_ContentType.Text;
-
-    /// after fetching the resource, we try to re-create the parameter-list
-    //FRESTParams.CustomParams.FromString(EmptyStr, FRESTParams.Resource);
-    FRESTParams.CustomParams.CreateURLSegmentsFromString(FRESTParams.Resource);
-
-    if (cmb_AuthMethod.ItemIndex > -1) then
-      FRESTParams.AuthMethod := RESTAuthMethodFromString(cmb_AuthMethod.Items[cmb_AuthMethod.ItemIndex])
-    else
-      FRESTParams.AuthMethod := DefaultRESTAuthMethod;
-
-    FRESTParams.AuthUsername    := edt_AuthUsername.Text;
-    FRESTParams.AuthUsernameKey := edt_AuthUsernameKey.Text;
-    FRESTParams.AuthPassword    := edt_AuthPassword.Text;
-    FRESTParams.AuthPasswordKey := edt_AuthPasswordKey.Text;
-    FRESTParams.ClientID        := edt_AuthClientID.Text;
-    FRESTParams.ClientSecret    := edt_AuthClientSecret.Text;
-    FRESTParams.AccessToken     := edt_AuthAccessToken.Text;
-    FRESTParams.RequestToken    := edt_AuthRequestToken.Text;
-    FRESTParams.ID              := FRESTParams.CustomParams.Count + 1;
-
-    DoUpdateProxyStateLabel;
-
-    FRESTParams.CustomBody.Clear;
-    memo_RequestBody.Lines.WriteBOM := False;
-    memo_RequestBody.Lines.SaveToStream(FRESTParams.CustomBody, TEncoding.UTF8);
-
-    FRESTParams.DataSetView := cb_ViewAs.ItemIndex;
-  end);
-end;
-
-procedure Tfrm_Main.DoPushRequestParamsToControls;
-var
-  s: string;
-  LParameter: TRESTRequestParameter;
-begin
-  s := RESTRequestMethodToString(FRESTParams.Method);
-  if (cmb_RequestMethod.Items.IndexOf(s) > -1) then
-    cmb_RequestMethod.ItemIndex := cmb_RequestMethod.Items.IndexOf(s)
-  else
-    cmb_RequestMethod.ItemIndex := -1;
-
-  cmb_RequestURL.Text := FRESTParams.URL;
-  edt_Resource.Text := FRESTParams.Resource;
-
-  if (edt_ContentType.Items.IndexOf(FRESTParams.ContentType) > -1) then
-  begin
-    edt_ContentType.ItemIndex := edt_ContentType.Items.IndexOf(FRESTParams.ContentType);
-    edt_ContentType.Text := FRESTParams.ContentType;
-  end
-  else
-  begin
-    edt_ContentType.ItemIndex := -1;
-    edt_ContentType.Text := EmptyStr;
-  end;
-
-  s := RESTAuthMethodToString(FRESTParams.AuthMethod);
-  if (cmb_AuthMethod.Items.IndexOf(s) > -1) then
-    cmb_AuthMethod.ItemIndex := cmb_AuthMethod.Items.IndexOf(s)
-  else
-    cmb_RequestMethod.ItemIndex := -1;
-
-  edt_AuthUsername.Text     := FRESTParams.AuthUsername;
-  edt_AuthUsernameKey.Text  := FRESTParams.AuthUsernameKey;
-  edt_AuthPassword.Text     := FRESTParams.AuthPassword;
-  edt_AuthPasswordKey.Text  := FRESTParams.AuthPasswordKey;
-  edt_AuthClientID.Text     := FRESTParams.ClientID;
-  edt_AuthClientSecret.Text := FRESTParams.ClientSecret;
-  edt_AuthAccessToken.Text  := FRESTParams.AccessToken;
-  edt_AuthRequestToken.Text := FRESTParams.RequestToken;
-
-  DoUpdateProxyStateLabel;
-
-  lb_CustomParameters.BeginUpdate;
-  lb_CustomParameters.Items.BeginUpdate;
-  try
-    lb_CustomParameters.Clear;
-    for LParameter IN FRESTParams.CustomParams do
-    begin
-      lb_CustomParameters.Items.AddObject(LParameter.ToString, LParameter);
-    end;
-  finally
-    lb_CustomParameters.Items.EndUpdate;
-    lb_CustomParameters.EndUpdate;
-  end;
-
-  if (FRESTParams.CustomBody.Size > 0) then
-  begin
-    FRESTParams.CustomBody.Seek(0, soFromBeginning);
-    memo_RequestBody.Lines.LoadFromStream(FRESTParams.CustomBody);
-  end
-  else
-    memo_RequestBody.Lines.Clear;
-
-  cb_ViewAs.ItemIndex := FRESTParams.DataSetView;
-  UpdateRootElement;
-end;
-
-procedure Tfrm_Main.DoResetControls;
-begin
-  lbl_LastRequestStats.Text := EmptyStr;
-
-  memo_RequestBody.Lines.Clear;
-  memo_ResponseHeader.Lines.Clear;
-  memo_ResponseBody.Lines.Clear;
-
-  cmb_RequestMethod.ItemIndex := cmb_RequestMethod.Items.IndexOf(RESTRequestMethodToString(DefaultRESTRequestMethod));
-
-  /// try to set the itemindex to the default-value
-  cmb_AuthMethod.ItemIndex := cmb_AuthMethod.Items.IndexOf(RESTAuthMethodToString(DefaultRESTAuthMethod));
-  edt_AuthUsername.Text := EmptyStr;
-  edt_AuthPassword.Text := EmptyStr;
-
-  DoUpdateAuthEditFields;
-
-  cbProxy.IsChecked := false;
-  edt_ProxyServer.Text := EmptyStr;
-  edt_ProxyUser.Text := EmptyStr;
-  edt_ProxyPass.Text := EmptyStr;
-  edt_ProxyPort.Value := 1000;
-
-  cbTimeout.IsChecked := True;
-  edt_Timeout.Value := 30000;
-
-  lb_CustomParameters.Clear;
-end;
-
-procedure Tfrm_Main.DoUpdateAuthEditFields;
-var
-  LSelectedMethod: TRESTAuthMethod;
-begin
-  if (cmb_AuthMethod.ItemIndex > -1) then
-    LSelectedMethod := RESTAuthMethodFromString(cmb_AuthMethod.Items[cmb_AuthMethod.ItemIndex])
-  else
-    LSelectedMethod := DefaultRESTAuthMethod;
-
-  case LSelectedMethod of
-    amNONE:
-      begin
-        edt_AuthUsername.Enabled := false;
-        edt_AuthUsernameKey.Enabled := false;
-        edt_AuthPassword.Enabled := false;
-        edt_AuthPasswordKey.Enabled := false;
-        edt_AuthClientID.Enabled := false;
-        edt_AuthClientSecret.Enabled := false;
-        edt_AuthAccessToken.Enabled := false;
-        edt_AuthClientSecret.Enabled := false;
-        edt_AuthRequestToken.Enabled := false;
-
-        btn_OAuthAssistant.Enabled := false;
-      end;
-    amSIMPLE:
-      begin
-        edt_AuthUsername.Enabled := true;
-        edt_AuthUsernameKey.Enabled := true;
-        edt_AuthPassword.Enabled := true;
-        edt_AuthPasswordKey.Enabled := true;
-        edt_AuthClientID.Enabled := false;
-        edt_AuthClientSecret.Enabled := false;
-        edt_AuthAccessToken.Enabled := false;
-        edt_AuthClientSecret.Enabled := false;
-        edt_AuthRequestToken.Enabled := false;
-
-        btn_OAuthAssistant.Enabled := false;
-      end;
-    amBASIC:
-      begin
-        edt_AuthUsername.Enabled := true;
-        edt_AuthUsernameKey.Enabled := false;
-        edt_AuthPassword.Enabled := true;
-        edt_AuthPasswordKey.Enabled := false;
-        edt_AuthClientID.Enabled := false;
-        edt_AuthClientSecret.Enabled := false;
-        edt_AuthAccessToken.Enabled := false;
-        edt_AuthClientSecret.Enabled := false;
-        edt_AuthRequestToken.Enabled := false;
-
-        btn_OAuthAssistant.Enabled := false;
-      end;
-    amOAUTH:
-      begin
-        edt_AuthUsername.Enabled := false;
-        edt_AuthUsernameKey.Enabled := false;
-        edt_AuthPassword.Enabled := false;
-        edt_AuthPasswordKey.Enabled := false;
-        edt_AuthClientID.Enabled := true;
-        edt_AuthClientSecret.Enabled := true;
-        edt_AuthAccessToken.Enabled := true;
-        edt_AuthClientSecret.Enabled := true;
-        edt_AuthRequestToken.Enabled := true;
-
-        btn_OAuthAssistant.Enabled := true;
-      end;
-    amOAUTH2:
-      begin
-        edt_AuthUsername.Enabled := false;
-        edt_AuthUsernameKey.Enabled := false;
-        edt_AuthPassword.Enabled := false;
-        edt_AuthPasswordKey.Enabled := false;
-        edt_AuthClientID.Enabled := true;
-        edt_AuthClientSecret.Enabled := true;
-        edt_AuthAccessToken.Enabled := true;
-        edt_AuthClientSecret.Enabled := true;
-        edt_AuthRequestToken.Enabled := true;
-
-        btn_OAuthAssistant.Enabled := true;
-      end;
-  end;
-end;
-
-procedure Tfrm_Main.DoUpdateMRUList;
-var
-  LItem: TRESTRequestParams;
-begin
-  cmb_RequestURL.Items.BeginUpdate;
-  cmb_RequestURL.Items.Clear;
-  for LItem IN FMRUList.Items do
-  begin
-    cmb_RequestURL.Items.AddObject(LItem.ToString, LItem);
-
-    if LItem.ID = 0 then
-      LItem.ID := cmb_RequestURL.Items.Count + 1;
-  end;
-  cmb_RequestURL.Items.EndUpdate;
-
-  /// we do know that the last executed request is on top of the
-  /// mru-list. so the item-index of the dropdown must be set to
-  /// zero.
-  if (cmb_RequestURL.Items.Count > 0) AND (cmb_RequestURL.Text <> EmptyStr) then
-    cmb_RequestURL.ItemIndex := 0
-  else
-    cmb_RequestURL.ItemIndex := -1;
-
-  if (cmb_RequestURL.ItemIndex > -1) then
-    cmb_RequestURL.Text := TRESTRequestParams(cmb_RequestURL.Items.Objects[cmb_RequestURL.ItemIndex]).URL;
-end;
-
-procedure Tfrm_Main.DoUpdateProxyStateLabel;
-begin
-  if cbProxy.IsChecked then
-  begin
-    lbl_ProxyState.Text := RSProxyServerEnabled + edt_ProxyServer.Text;
-    if (edt_ProxyPort.Value > 0.1) then
-      lbl_ProxyState.Text := lbl_ProxyState.Text + ':' + IntToStr(Trunc(edt_ProxyPort.Value));
-  end
-  else
-    lbl_ProxyState.Text := RSProxyServerDisabled;
-end;
-
 procedure Tfrm_Main.EditRootElementChangeTracking(Sender: TObject);
 begin
   EditRootElementTab.Text := EditRootElement.Text;
@@ -1036,43 +469,6 @@ end;
 procedure Tfrm_Main.EditRootElementTabChangeTracking(Sender: TObject);
 begin
   EditRootElement.Text := EditRootElementTab.Text;
-end;
-
-procedure Tfrm_Main.UpdateRootElement;
-var
-  LIntf: IRESTResponseJSON;
-begin
-  Assert(EditRootElement.Text = EditRootElementTab.Text);
-
-  if (RESTResponse.RootElement <> EditRootElement.Text) or
-     (cb_NestedFields.IsChecked <> RESTResponseDataSetAdapter.NestedElements){ or
-     (cb_ViewAs.ItemIndex <> Integer(RESTResponseDataSetAdapter.TypesMode))} then
-  begin
-    SaveGridColumnWidths;
-    try
-     LIntf := RESTResponse;
-      if not LIntf.HasJSONResponse then
-        if RESTResponse.ContentLength > 0 then
-          raise Exception.Create(Format(RSRootElementAppliesToJSON, [EditRootElement.Text]));
-      RESTResponse.RootElement := EditRootElement.Text;
-    except
-      TWait.Done;
-      RESTResponse.RootElement := FCurrentRootElement;
-      if tc_Response.ActiveTab = ti_Response_TableView then
-        EditRootElementTab.SetFocus
-      else
-      begin
-        tc_Response.ActiveTab := ti_Response_Body;
-        EditRootElement.SetFocus
-      end;
-      raise;
-    end;
-
-    RESTResponseDataSetAdapter.NestedElements := cb_NestedFields.IsChecked;
-    //RESTResponseDataSetAdapter.TypesMode := TJSONTypesMode(cb_ViewAs.ItemIndex);
-    RestoreGridColumnWidths;
-    FillReponseContentMemo;
-  end;
 end;
 
 procedure Tfrm_Main.TrayWndProc(var Message: TMessage);
@@ -1148,7 +544,9 @@ begin
   InitAuthMethodCombo;
   DoResetControls;
 
-  FPopupClosed:= FALSE;
+  FPopupClosed:= False;
+
+  DefaultStorageFolder := ExtractFilePath(ParamStr(0));
 
   dlg_LoadRequestSettings.InitialDir := DefaultStorageFolder;
   dlg_SaveRequestSettings.InitialDir := DefaultStorageFolder;
@@ -1176,6 +574,10 @@ begin
 //      end);
     end;
 //  end).Start;
+  fmtHistorico.CreateDataSet;
+
+  if FileExists(StringReplace(ParamStr(0), '.exe', '.history.log', [])) then
+    fmtHistorico.LoadFromFile(StringReplace(ParamStr(0), '.exe', '.history.log', []), sfJSON);
 end;
 
 procedure Tfrm_Main.FormDestroy(Sender: TObject);
@@ -1251,42 +653,6 @@ begin
   ShowWindow(appHandle, SW_SHOW);
 end;
 
-procedure Tfrm_Main.InitAuthMethodCombo;
-var
-  LAuthMethod: TRESTAuthMethod;
-begin
-  cmb_AuthMethod.BeginUpdate;
-  TRY
-    cmb_AuthMethod.Clear;
-    for LAuthMethod IN [Low(TRESTAuthMethod) .. High(TRESTAuthMethod)] do
-      cmb_AuthMethod.Items.Add(RESTAuthMethodToString(LAuthMethod));
-  FINALLY
-    cmb_AuthMethod.EndUpdate;
-  END;
-
-  /// try to set the itemindex to the default-value
-  if (cmb_AuthMethod.Items.IndexOf(RESTAuthMethodToString(DefaultRESTAuthMethod)) > -1) then
-    cmb_AuthMethod.ItemIndex := cmb_AuthMethod.Items.IndexOf(RESTAuthMethodToString(DefaultRESTAuthMethod));
-end;
-
-procedure Tfrm_Main.InitRequestMethodCombo;
-var
-  LRequestMethod: TRESTRequestMethod;
-begin
-  cmb_RequestMethod.BeginUpdate;
-  TRY
-    cmb_RequestMethod.Clear;
-    for LRequestMethod IN [Low(TRESTRequestMethod) .. High(TRESTRequestMethod)] do
-      cmb_RequestMethod.Items.Add(RESTRequestMethodToString(LRequestMethod));
-  FINALLY
-    cmb_RequestMethod.EndUpdate;
-  END;
-
-  /// try to set the itemindex to the default-value
-  if (cmb_RequestMethod.Items.IndexOf(RESTRequestMethodToString(DefaultRESTRequestMethod)) > -1) then
-    cmb_RequestMethod.ItemIndex := cmb_RequestMethod.Items.IndexOf(RESTRequestMethodToString(DefaultRESTRequestMethod));
-end;
-
 procedure Tfrm_Main.KeyDown(var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
   if (Key = vkF9) then
@@ -1307,30 +673,6 @@ end;
 procedure Tfrm_Main.lb_CustomParametersDblClick(Sender: TObject);
 begin
   DoEditCustomParameter;
-end;
-
-function Tfrm_Main.MakeWidthKey(const AHeader: string): string;
-var
-  I, J: Integer;
-begin
-  Result := AHeader;
-  if RESTResponse.RootElement <> EmptyStr then
-    if RESTResponse.JSONValue is TJSONObject then
-      Result := RESTREsponse.RootElement + '.' + AHeader;
-  // Normalize [0]
-  repeat
-    I := Result.IndexOf('[');
-    if I >= 0 then
-    begin
-      J := Result.IndexOf(']', I);
-      if J > 0 then
-        Result := Result.Substring(0, I) + '||' + Result.Substring(J+1, Length(Result))
-      else
-        Result := Result.Substring(0, I) + '||';
-    end;
-  until I < 0;
-  if Result.StartsWith('||.') then
-    Result := Result.SubString(3);
 end;
 
 procedure Tfrm_Main.MenuItem1Click(Sender: TObject);
@@ -1387,41 +729,9 @@ begin
       Accepted := True;
 end;
 
-procedure Tfrm_Main.RestoreGridColumnWidths;
-var
-  I: Integer;
-  LColumn: TColumn;
-  LKey: string;
-  LWidth: Integer;
-begin
-  for I := 0 to StringGrid1.ColumnCount - 1 do
-  begin
-    LColumn := StringGrid1.Columns[I];
-    LKey := MakeWidthKey(LColumn.Header);
-    if FSettingsList.GetWidth(LKey, LWidth) then
-      LColumn.Width := LWidth;
-  end;
-end;
-
 procedure Tfrm_Main.RESTResponseDataSetAdapterBeforeOpenDataSet(Sender: TObject);
 begin
   FCurrentRootElement := RESTResponse.RootElement;
-end;
-
-procedure Tfrm_Main.SaveGridColumnWidths;
-var
-  I: Integer;
-  LColumn: TColumn;
-  LKey: string;
-begin
-  for I := 0 to StringGrid1.ColumnCount - 1 do
-  begin
-    LColumn := StringGrid1.Columns[I];
-    LKey := MakeWidthKey(LColumn.Header);
-    FSettingsList.AddWidth(LKey, Round(LColumn.Width));
-  end;
-
-  FSettingsList.SaveToFile;
 end;
 
 procedure Tfrm_Main.StringGrid1HeaderClick(Column: TColumn);
@@ -1455,19 +765,6 @@ end;
 procedure Tfrm_Main.tc_ResponseChange(Sender: TObject);
 begin
   TLog.MyLog('Mudando TAB' + tc_Response.ActiveTab.Name, nil, 0, false, TCriticalLog.tlINFO);
-end;
-
-procedure Tfrm_Main.SynchEditCaret(AEdit1, AEdit2: TCustomEdit);
-var
-  LCaret: Integer;
-begin
-  if AEdit2.Text <> EmptyStr then
-  begin
-    AEdit2.SetFocus;
-    AEdit2.SelLength := 0;
-    LCaret := AEdit1.CaretPosition;
-    AEdit2.CaretPosition := LCaret;
-  end;
 end;
 
 procedure Tfrm_Main.ti_Response_BodyClick(Sender: TObject);

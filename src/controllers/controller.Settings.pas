@@ -10,6 +10,7 @@ procedure SaveProxySettings(const AFilename: string);
 implementation
 
 uses
+  controller.MainForm,
   uMain_frm,
   untLog,
   System.IniFiles,

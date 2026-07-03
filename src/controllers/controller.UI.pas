@@ -3,6 +3,7 @@ unit controller.UI;
 interface
 
 uses
+  controller.MainForm,
   uMain_frm,
   provider.Types,
   System.JSON,

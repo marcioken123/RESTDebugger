@@ -3,10 +3,11 @@ unit udmRESTDebugger;
 interface
 
 uses
-  System.SysUtils, System.Classes;
+  System.SysUtils, System.Classes, FireDAC.Stan.StorageJSON;
 
 type
   TdmRestDebugger = class(TDataModule)
+    FDStanStorageJSONLink1: TFDStanStorageJSONLink;
   private
     { Private declarations }
   public

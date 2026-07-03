@@ -3,9 +3,9 @@ unit controller.RESTRequest;
 interface
 
 uses
-  REST.Client, FMX.Dialogs, REST.Consts, System.UITypes,
-  System.SysUtils, System.Classes, REST.Response.Adapter, MMSystem,
-  controller.UI;
+  REST.Client, FMX.Dialogs, System.UITypes,
+  System.SysUtils, System.Classes, MMSystem,
+  controller.MainForm;
 
 procedure DoExecuteRequest(RESTRequest: tRESTRequest);
 
@@ -14,7 +14,7 @@ implementation
 uses
   untLog,
   ufrmWait,
-  uMain_frm;
+  uMain_frm, FireDAC.Stan.Intf;
 
 procedure DoExecuteRequest(RESTRequest: tRESTRequest);
 begin
@@ -76,6 +76,13 @@ begin
           PlaySound('notification', 0, SND_ASYNC);
           TWait.Done;
           frm_Main.tc_Response.ActiveTab := frm_Main.ti_Response_Body;
+
+          frm_Main.fmtHistorico.LoadFromFile(StringReplace(ParamStr(0), '.exe', '.history.log', []), sfJSON);
+          frm_Main.fmtHistorico.Append;
+          frm_Main.fmtHistoricoDATAHORA.AsDateTime := Now;
+          frm_Main.fmtHistoricoID_REQUEST.AsInteger := frm_Main.FRESTParams.ID;
+          frm_Main.fmtHistorico.Post;
+          frm_Main.fmtHistorico.SaveToFile(StringReplace(ParamStr(0), '.exe', '.history.log', []), sfJSON);
         end);
       end;
     end;

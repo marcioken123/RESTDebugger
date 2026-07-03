@@ -350,12 +350,13 @@ var
 
   function VerDataPassouLimite: Boolean;
   var
-    DataAux: TDate;
+    DataAux: TDateTime;
   begin
     ReadLn(F, sAux);
     try
-      DataAux := EncodeDate(StrToIntDef(Copy(sAux, 7, 4), 0), StrToIntDef(Copy(sAux, 4, 2), 0), StrToIntDef(Copy(sAux, 1, 2), 0));
-      Result :=  Trunc(DataHoje - DataAux) > ALimiteDias;
+//      DataAux := EncodeDate(StrToIntDef(Copy(sAux, 7, 4), 0), StrToIntDef(Copy(sAux, 4, 2), 0), StrToIntDef(Copy(sAux, 1, 2), 0));
+      if TryEncodeDate(StrToIntDef(Copy(sAux, 7, 4), 0), StrToIntDef(Copy(sAux, 4, 2), 0), StrToIntDef(Copy(sAux, 1, 2), 0), DataAux) then
+        Result :=  Trunc(DataHoje - DataAux) > ALimiteDias;
     except
       Result := True;
     end;

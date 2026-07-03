@@ -316,8 +316,8 @@ object frm_Main: Tfrm_Main
             PNG = {
               89504E470D0A1A0A0000000D494844520000004800000048080600000055EDB3
               47000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
-              002B49444154785EEDC1010D000000C2A0F74F6D0E37A0000000000000000000
-              00000000000000000000003E0C5148000150DEE0A50000000049454E44AE4260
+              002B49444154785EEDC1010D000000C2A0F74F6D0E3720000000000000000000
+              00000000000000000000800B3551480001BE7816D50000000049454E44AE4260
               82}
           end
           item
@@ -31242,6 +31242,17 @@ object frm_Main: Tfrm_Main
     Size.Height = 600.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 22
+    object Grid1: TGrid
+      Align = Client
+      CanFocus = True
+      ClipChildren = True
+      Size.Width = 209.000000000000000000
+      Size.Height = 600.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      Viewport.Width = 189.000000000000000000
+      Viewport.Height = 559.000000000000000000
+    end
   end
   object RESTClient: TRESTClient
     Accept = 'application/json;q=0.9,text/plain;q=0.9,text/html'
@@ -31255,7 +31266,6 @@ object frm_Main: Tfrm_Main
     Top = 530
   end
   object RESTRequest: TRESTRequest
-    AssignedValues = [rvAccept, rvAcceptCharset]
     Accept = 'application/json;q=0.9,text/plain;q=0.9,text/html'
     AcceptCharset = 'UTF-8'
     Client = RESTClient
@@ -31309,6 +31319,12 @@ object frm_Main: Tfrm_Main
       GridControl = StringGrid1
       Columns = <>
     end
+    object LinkGridToDataSourceBindSourceDB12: TLinkGridToDataSource
+      Category = 'Quick Bindings'
+      DataSource = BindSourceDB1
+      GridControl = Grid1
+      Columns = <>
+    end
   end
   object BindSourceDB1: TBindSourceDB
     DataSet = fmtHistorico
@@ -31317,6 +31333,7 @@ object frm_Main: Tfrm_Main
     Top = 416
   end
   object fmtHistorico: TFDMemTable
+    IndexFieldNames = 'DATAHORA;ID_REQUEST'
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -31330,6 +31347,9 @@ object frm_Main: Tfrm_Main
     end
     object fmtHistoricoDATAHORA: TDateTimeField
       FieldName = 'DATAHORA'
+    end
+    object fmtHistoricoID_REQUEST: TIntegerField
+      FieldName = 'ID_REQUEST'
     end
   end
   object FDMemTable1: TFDMemTable
