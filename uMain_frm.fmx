@@ -316,8 +316,8 @@ object frm_Main: Tfrm_Main
             PNG = {
               89504E470D0A1A0A0000000D494844520000004800000048080600000055EDB3
               47000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
-              002B49444154785EEDC1010D000000C2A0F74F6D0E3720000000000000000000
-              00000000000000000000800B3551480001BE7816D50000000049454E44AE4260
+              002B49444154785EEDC1010D000000C2A0F74F6D0E37A0000000000000000000
+              00000000000000000000003E0C5148000150DEE0A50000000049454E44AE4260
               82}
           end
           item
@@ -31250,8 +31250,9 @@ object frm_Main: Tfrm_Main
       Size.Height = 600.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
+      Options = [AlternatingRowBackground, Editing, ColumnResize, ColumnMove, ColLines, RowLines, Tabs, Header, HeaderClick, AutoDisplacement]
       Viewport.Width = 189.000000000000000000
-      Viewport.Height = 559.000000000000000000
+      Viewport.Height = 575.000000000000000000
     end
   end
   object RESTClient: TRESTClient
@@ -31266,6 +31267,7 @@ object frm_Main: Tfrm_Main
     Top = 530
   end
   object RESTRequest: TRESTRequest
+    AssignedValues = [rvAccept, rvAcceptCharset]
     Accept = 'application/json;q=0.9,text/plain;q=0.9,text/html'
     AcceptCharset = 'UTF-8'
     Client = RESTClient
@@ -31323,7 +31325,15 @@ object frm_Main: Tfrm_Main
       Category = 'Quick Bindings'
       DataSource = BindSourceDB1
       GridControl = Grid1
-      Columns = <>
+      Columns = <
+        item
+          MemberName = 'ID'
+          Width = 30
+        end
+        item
+          MemberName = 'DATAHORA'
+          Width = 150
+        end>
     end
   end
   object BindSourceDB1: TBindSourceDB
@@ -31333,7 +31343,7 @@ object frm_Main: Tfrm_Main
     Top = 416
   end
   object fmtHistorico: TFDMemTable
-    IndexFieldNames = 'DATAHORA;ID_REQUEST'
+    IndexFieldNames = 'DATAHORA:D;ID_REQUEST:D'
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -31350,6 +31360,17 @@ object frm_Main: Tfrm_Main
     end
     object fmtHistoricoID_REQUEST: TIntegerField
       FieldName = 'ID_REQUEST'
+    end
+    object fmtHistoricoSTATUSCODE: TIntegerField
+      FieldName = 'STATUSCODE'
+    end
+    object fmtHistoricoRESPONSE: TStringField
+      FieldName = 'RESPONSE'
+      Size = 10000
+    end
+    object fmtHistoricoHEADER: TStringField
+      FieldName = 'HEADER'
+      Size = 1000
     end
   end
   object FDMemTable1: TFDMemTable

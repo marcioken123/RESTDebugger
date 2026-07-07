@@ -28,7 +28,9 @@ uses
   controller.UI in 'src\controllers\controller.UI.pas',
   controller.Settings in 'src\controllers\controller.Settings.pas',
   controller.RESTRequest in 'src\controllers\controller.RESTRequest.pas',
-  udmRESTDebugger in 'src\dao\udmRESTDebugger.pas', System.SysUtils {dmRestDebugger: TDataModule};
+  udmRESTDebugger in 'src\dao\udmRESTDebugger.pas' {dmRestDebugger: TDataModule},
+  System.SysUtils {dmRestDebugger: TDataModule},
+  controller.Historico in 'src\controllers\controller.Historico.pas';
 
 {$R *.res}
 

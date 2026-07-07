@@ -50,7 +50,7 @@ begin
   for LItem IN frm_main.FMRUList.Items do
   begin
     cdsRequestAPI.Append;
-    cdsRequestAPIID.AsInteger := cdsRequestAPI.RecordCount+1;
+    cdsRequestAPIID.AsInteger := LItem.ID;
     cdsRequestAPIMETODO.AsString := RESTRequestMethodToString(LItem.Method);
     cdsRequestAPIURL.AsString := LItem.URL;
     cdsRequestAPIBODY_REQUEST.LoadFromStream(LItem.CustomBody);

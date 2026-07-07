@@ -172,6 +172,9 @@ type
     fmtHistoricoID_REQUEST: TIntegerField;
     Grid1: TGrid;
     LinkGridToDataSourceBindSourceDB12: TLinkGridToDataSource;
+    fmtHistoricoSTATUSCODE: TIntegerField;
+    fmtHistoricoRESPONSE: TStringField;
+    fmtHistoricoHEADER: TStringField;
     procedure FormCreate(Sender: TObject);
     procedure btn_ExecuteRequestClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);

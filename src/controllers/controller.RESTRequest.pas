@@ -12,9 +12,11 @@ procedure DoExecuteRequest(RESTRequest: tRESTRequest);
 implementation
 
 uses
+  controller.Historico,
   untLog,
   ufrmWait,
-  uMain_frm, FireDAC.Stan.Intf;
+  uMain_frm,
+  FireDAC.Stan.Intf;
 
 procedure DoExecuteRequest(RESTRequest: tRESTRequest);
 begin
@@ -77,13 +79,11 @@ begin
           TWait.Done;
           frm_Main.tc_Response.ActiveTab := frm_Main.ti_Response_Body;
 
-          frm_Main.fmtHistorico.LoadFromFile(StringReplace(ParamStr(0), '.exe', '.history.log', []), sfJSON);
-          frm_Main.fmtHistorico.Append;
-          frm_Main.fmtHistoricoDATAHORA.AsDateTime := Now;
-          frm_Main.fmtHistoricoID_REQUEST.AsInteger := frm_Main.FRESTParams.ID;
-          frm_Main.fmtHistorico.Post;
-          frm_Main.fmtHistorico.SaveToFile(StringReplace(ParamStr(0), '.exe', '.history.log', []), sfJSON);
-        end);
+          SalvarHistorico(frm_Main.FRESTParams.Id,
+                          frm_Main.memo_ResponseHeader.Text,
+                          frm_Main.memo_ResponseBody.Text,
+                          frm_Main.RESTResponse.StatusCode);
+       end);
       end;
     end;
   end).Start;
