@@ -170,11 +170,14 @@ type
     fmtHistoricoDATAHORA: TDateTimeField;
     FDMemTable1: TFDMemTable;
     fmtHistoricoID_REQUEST: TIntegerField;
-    Grid1: TGrid;
+    GridHistorico: TGrid;
     LinkGridToDataSourceBindSourceDB12: TLinkGridToDataSource;
     fmtHistoricoSTATUSCODE: TIntegerField;
     fmtHistoricoRESPONSE: TStringField;
     fmtHistoricoHEADER: TStringField;
+    Rectangle1: TRectangle;
+    MenuItem7: TMenuItem;
+    MenuItem8: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure btn_ExecuteRequestClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -219,7 +222,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure tc_ResponseChange(Sender: TObject);
     procedure MenuItem5Click(Sender: TObject);
-    procedure MenuItem4Click(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+    procedure MenuItem7Click(Sender: TObject);
   public
     { Private declarations }
     TrayWnd: HWND;
@@ -247,6 +251,7 @@ implementation
 
 uses
   controller.MainForm,
+  controller.Historico,
 {$IFDEF MSWINDOWS}
   System.Net.HttpClient.Win,
 {$ENDIF}
@@ -579,8 +584,7 @@ begin
 //  end).Start;
   fmtHistorico.CreateDataSet;
 
-  if FileExists(StringReplace(ParamStr(0), '.exe', '.history.log', [])) then
-    fmtHistorico.LoadFromFile(StringReplace(ParamStr(0), '.exe', '.history.log', []), sfJSON);
+  CarregarHistorico;
 end;
 
 procedure Tfrm_Main.FormDestroy(Sender: TObject);
@@ -625,6 +629,16 @@ begin
   ShowWindow(appHandle, SW_HIDE);
 
   Shell_NotifyIcon(NIM_ADD, @TrayIconData);
+end;
+
+procedure Tfrm_Main.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+begin
+  if (Key = VK_DELETE) and (GridHistorico.IsFocused) then
+    if MessageBox(0, 'Deseja realmente apagar o registro?', PChar(Self.Caption), MB_YESNO) = mrYes then
+    begin
+      fmtHistorico.Delete;
+      SalvarHistorico;
+    end;
 end;
 
 procedure Tfrm_Main.FormShow(Sender: TObject);
@@ -688,7 +702,12 @@ begin
   application.Terminate;
 end;
 
-procedure Tfrm_Main.MenuItem4Click(Sender: TObject);
+procedure Tfrm_Main.MenuItem5Click(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+procedure Tfrm_Main.MenuItem7Click(Sender: TObject);
 begin
   try
     Application.CreateForm(TfrmListaAPIs, frmListaAPIs);
@@ -696,11 +715,6 @@ begin
   finally
      frmListaAPIs.Free;
   end;
-end;
-
-procedure Tfrm_Main.MenuItem5Click(Sender: TObject);
-begin
-  Application.Terminate;
 end;
 
 procedure Tfrm_Main.RESTClientNeedClientCertificate(const Sender: TObject;
