@@ -87,6 +87,20 @@ var
   LWidth: Integer;
   LKey: string;
 begin
+//  with TStringList.Create do
+//  begin
+//    try
+//      Clear;
+//
+//      if FileExists(AFilename) then
+//        LoadFromFile(AFilename);
+//
+//      SaveToFile(AFilename, TEncoding.Unicode);
+//    finally
+//      Free;
+//    end;
+//  end;
+
   Clear;
 
   if (AFilename <> '') then

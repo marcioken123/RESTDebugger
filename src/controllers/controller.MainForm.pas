@@ -689,7 +689,11 @@ begin
 
     FRESTParams.CustomBody.Clear;
     memo_RequestBody.Lines.WriteBOM := False;
-    memo_RequestBody.Lines.SaveToStream(FRESTParams.CustomBody, TEncoding.UTF8);
+
+    FRESTParams.CustomBody.Clear;
+
+    if FRESTParams.Method <> rmGET then
+      memo_RequestBody.Lines.SaveToStream(FRESTParams.CustomBody, TEncoding.UTF8);
 
     FRESTParams.DataSetView := cb_ViewAs.ItemIndex;
   end);

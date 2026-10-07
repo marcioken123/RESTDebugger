@@ -176,8 +176,11 @@ type
     fmtHistoricoRESPONSE: TStringField;
     fmtHistoricoHEADER: TStringField;
     Rectangle1: TRectangle;
+    cbFiltroData: TComboBox;
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
+    procedure cbFiltroDataChange(Sender: TObject);
+    procedure fmtHistoricoFilterRecord(DataSet: TDataSet; var Accept: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure btn_ExecuteRequestClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -585,6 +588,7 @@ begin
   fmtHistorico.CreateDataSet;
 
   CarregarHistorico;
+  cbFiltroDataChange(Self);
 end;
 
 procedure Tfrm_Main.FormDestroy(Sender: TObject);
@@ -792,6 +796,26 @@ end;
 procedure Tfrm_Main.ti_Response_TableViewClick(Sender: TObject);
 begin
   SynchEditCaret(EditRootElement, EditRootElementTab);
+end;
+
+procedure Tfrm_Main.fmtHistoricoFilterRecord(DataSet: TDataSet; var Accept: Boolean);
+begin
+  if not DataSet.FieldByName('DATAHORA').IsNull then
+    Accept := Trunc(DataSet.FieldByName('DATAHORA').AsDateTime) = Trunc(Now);
+end;
+
+procedure Tfrm_Main.cbFiltroDataChange(Sender: TObject);
+begin
+  if cbFiltroData.ItemIndex = 0 then
+  begin
+    fmtHistorico.OnFilterRecord := fmtHistoricoFilterRecord;
+    fmtHistorico.Filtered := True;
+  end
+  else
+  begin
+    fmtHistorico.Filtered := False;
+    fmtHistorico.OnFilterRecord := nil;
+  end;
 end;
 
 end.

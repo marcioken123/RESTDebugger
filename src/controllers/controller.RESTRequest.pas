@@ -27,26 +27,34 @@ begin
   begin
     for LCont := 0 to Trunc(frm_Main.edt_Tentativas.Value) do
     begin
-      TLog.MyLogTemp('IntegracaoAPI (Enviando). ' +
-                     'Tentativa: "' + IntToStr(1) + '" | ' +
-                     'Url: "'       + frm_Main.RESTClient.BaseURL + '" | ' +
-                     'Metodo: "'    + frm_Main.cmb_RequestMethod.Items[frm_Main.cmb_RequestMethod.ItemIndex] + '"'+
-                     'ConteudoEnviado: "' + frm_Main.memo_RequestBody.Text + '"',
-                     nil, 0, False, TCriticalLog.tlINFO);
+      TThread.Synchronize(nil,
+      procedure
+      begin
+        TLog.MyLogTemp('IntegracaoAPI (Enviando). ' +
+                       'Tentativa: "' + IntToStr(1) + '" | ' +
+                       'Url: "'       + frm_Main.RESTClient.BaseURL + '" | ' +
+                       'Metodo: "'    + frm_Main.cmb_RequestMethod.Selected.Text + '"'+
+                       'ConteudoEnviado: "' + frm_Main.memo_RequestBody.Text + '"',
+                       nil, 0, False, TCriticalLog.tlINFO);
+      end);
+
       try
         try
           RESTRequest.Execute;
 
-          TLog.MyLogTemp('IntegracaoAPI (Resultado Ok). ' +
-                         'Tentativa: "'        + IntToStr(1) + '" | ' +
-                         'Url: "'              + frm_Main.cmb_RequestURL.Text       + '" | ' +
-                         'Metodo: "'           + frm_Main.cmb_RequestMethod.Items[frm_Main.cmb_RequestMethod.ItemIndex] + '" | ' +
-                         'ConteudoRecebido: "' + frm_Main.memo_ResponseBody.Text    + '" | ' ,
-                         //'HttpStatusCode: "'   + LStatusCode               + '" | ' +
-                         //'TempoDecorrido: "'   + LTempoDecorrido.ToString  + '"',
-                         nil, 0, False, TCriticalLog.tlINFO);
-
-          frm_Main.DoDisplayHTTPResponse(RESTRequest, frm_Main.RESTClient, frm_Main.RESTResponse);
+          TThread.Synchronize(nil,
+          procedure
+          begin
+            TLog.MyLogTemp('IntegracaoAPI (Resultado Ok). ' +
+                           'Tentativa: "'        + IntToStr(1) + '" | ' +
+                           'Url: "'              + frm_Main.cmb_RequestURL.Text       + '" | ' +
+                           'Metodo: "'           + frm_Main.cmb_RequestMethod.Selected.Text + '" | ' +
+                           'ConteudoRecebido: "' + frm_Main.memo_ResponseBody.Text    + '" | ' ,
+                           //'HttpStatusCode: "'   + LStatusCode               + '" | ' +
+                           //'TempoDecorrido: "'   + LTempoDecorrido.ToString  + '"',
+                           nil, 0, False, TCriticalLog.tlINFO);
+          end);
+          //frm_Main.DoDisplayHTTPResponse(RESTRequest, frm_Main.RESTClient, frm_Main.RESTResponse);
 
           /// add the current request to the MRU-list
           frm_Main.DoAddToMRUList(frm_Main.FRESTParams);
@@ -78,7 +86,7 @@ begin
           PlaySound('notification', 0, SND_ASYNC);
           TWait.Done;
           frm_Main.tc_Response.ActiveTab := frm_Main.ti_Response_Body;
-
+          frm_Main.DoDisplayHTTPResponse(RESTRequest, frm_Main.RESTClient, frm_Main.RESTResponse);
           SalvarHistorico(frm_Main.FRESTParams.Id,
                           frm_Main.memo_ResponseHeader.Text,
                           frm_Main.memo_ResponseBody.Text,

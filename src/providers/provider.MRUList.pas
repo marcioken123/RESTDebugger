@@ -51,6 +51,20 @@ constructor TMRUList.Create(const AFilename: string = '');
 begin
   inherited Create;
 
+//  with TStringList.Create do
+//  begin
+//    try
+//      Clear;
+//
+//      if FileExists(AFilename) then
+//        LoadFromFile(AFilename);
+//
+//      SaveToFile(AFilename, TEncoding.Unicode);
+//    finally
+//      Free;
+//    end;
+//  end;
+
   FFilename := AFilename;
   FAutoSave := (FFilename <> '');
 
